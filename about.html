@@ -1,0 +1,182 @@
+<!--Team profile page with:
+ - Group name, class day/time (nested list)
+ - Member contributions + quotes (definition list; first/favourite language + translation)
+ - Group photo (<300KB) with <figure> + caption
+ - Fun facts table with caption (eg., dream job, coding snack, hometown)
+
+ - Student IDs styled on right side, group photo in <figure> 
+   with border, table with bold headers, colours in hex, hover effects.
+-->
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+
+        <meta charset="UTF-8">
+
+        <!-- Responsive Web Design -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- HTML Page Description for SEO -->
+        <meta name="description" content="">
+
+        <!-- Keywords for SEO -->
+        <meta name="keywords" content="">
+
+        <!-- Author Information -->
+        <meta name="author" content="Jonah, James, Kia and Duc">
+
+        <!-- Link to external CSS File -->
+         <link rel="stylesheet" href="styles/stylessheet.css">
+        
+        <!-- Title of Web Page-->
+        <title> About </title>
+    </head>
+    <body>
+       <header>
+          <!-- Header -->
+          <!-- Hamburger Menu -->
+          <label class="hamburger_menu" for="hamburger">
+            <span class="hidden_text">hidden</span>
+            <input type="checkbox" name="hamburger" id="hamburger">
+          </label>
+          <div class="sidebar">
+            <nav>
+                <ul>
+                  <li><a href="jobs.html">Jobs</a></li>
+                  <li><a href="apply.html">Apply</a></li>
+                  <li><a href="about.html" class="activePage">About</a></li>
+                </ul>
+            </nav>
+          </div>
+          <!-- Normal Header -->
+          <div class="header_container">
+            <div class="nav_container">
+              <nav>
+                <ul>
+                  <li><a href="jobs.html">Jobs</a></li>
+                  <li><a href="apply.html">Apply</a></li>
+                  <li><a href="about.html" class="activePage">About</a></li>
+                </ul>
+              </nav>
+            </div>            
+            <div class="logo_container">
+              <a href="index.html"><img id="logo" src="images/Logo_Black.svg" alt="This is Melonballs Logo"></a>
+              <p>MELON<strong>BALL</strong></p>
+            </div>
+            <div class="right_spacer"></div>
+          </div>
+          <!-- End of Header -->
+      </header>
+        
+        <main>
+            <h1> About </h1>
+              <section class = "about-section">
+                <h2>Group Information</h2>
+                <ul>
+                  <li>Group Name:  MelonBall
+                    <ul>
+                      <li>Class Day: Thursday</li>
+                      <li>Class Time: 12:30 PM – 2:30 PM</li>
+                    </ul>
+                  </li>
+                </ul>
+              </section>
+            <figure class = "photo-box">
+                <img class="group-photo" src="images/group_photo.jpeg" width="220"alt="Group Photo">
+                <figcaption> Our Group Photo </figcaption>
+            </figure>
+            <!--Span for the languages I got from Google AI Summary-->
+            <section class = "about-section">
+                <h2> James Ralph</h2>
+                <dl>
+                  <dt>Member Contributions</dt>
+                  <dd>Contributed to scheduling meetings and correspondance with lecturer.</dd>
+                  <dd>The delagation of duties was also handled by Jonah and me. For our webpage my 
+                  responsibilities were for the company details(Who is the company, job details etc),
+                  the index.html and relevant CSS. </dd>
+                  <dt> Quote </dt>
+                  <dd>Italian: <span lang="it">"Finché c'è vita c'è speranza"</span></dd>
+                  <dd>English: "While there's life, there's hope"</dd>
+                </dl>
+                <h2> Jonah Clyde</h2>
+                <dl>
+                  <dt>Member Contributions</dt>
+                  <dd>Contributed towards making the jira as well as organising the sprints. 
+                      for the webpage, i went into apply.html and apply_styles.css, which is
+                      a form for people applying for a job at melonball :)</dd>
+                  <dt> Quote </dt>
+                  <dd> Japanese: <span lang="ja">日本語: 猿も木から落ちる</span></dd>
+                  <dd> English: Even a monkey falls down from trees</dd>
+                </dl>
+                <h2> Duc Vo</h2>
+                <dl>
+                  <dt>Member Contributions</dt>
+                  <dd>Contributed on making about.html and about.css</dd>
+                  <dt> Quote </dt>
+                  <dd> Tiếng Việt: <span lang="vi">"Nhìn người Việt bay mà không cần cánh kìa!"</span></dd>
+                  <dd> English: "Look at the Vietnamese flying without wings!" </dd>
+                </dl>
+                <h2>Kiahok Ung</h2>
+                <dl >
+                  <dt>Member Contributions</dt>
+                  <dd>Contributed with the website mock up design, header and footer css, jobs.html and css 
+                      portion of it. Code for the website consistency and mobile view. </dd>
+                  <dt> Quote </dt>
+                  <dd>Khhmer: <span lang="km">ដំរី​ជើង​បួន គង់​មាន​ភ្លាត់ អ្នកប្រាជ្ញ​ចេះ​ស្ទាត់ គង់​មាន​ភ្លេច"</span></dd>
+                  <dd>English:“A four-legged elephant can still fall, a wise man who's knowledgeable can still forget.”</dd>
+                </dl>
+            </section>
+        </main>
+            <section class = "about-section">
+            <table>
+                 <caption>Fun Facts</caption>
+                 <thead>
+                   <tr>
+                     <th> Name </th>
+                     <th> Student ID </th>
+                     <th> Dream Job </th>
+                     <th> Coding Snack </th>
+                     <th> Hometown </th>
+                   </tr>
+                 <tbody>
+                   <tr>
+                     <td> James Ralph </td>
+                     <td class="align_right"> 105874572 </td>
+                     <td> Audio Director/Programmer</td>
+                     <td> HSP </td>
+                     <td> Brisbane </td>
+                   </tr>
+                   <tr>
+                     <td> Jonah Clyde </td>
+                     <td class="align_right"> 105671294 </td>
+                     <td> Software Engineer </td>
+                     <td> Ice Cream </td>
+                     <td> Melbourne </td>
+                   </tr>
+                   <tr>
+                     <td> Duc Vo </td>
+                     <td class="align_right"> 105739480 </td>
+                     <td> Data Scientist </td>
+                     <td> Bubble Tea </td>
+                     <td> Brisbane </td>
+                   </tr>
+                   <tr>
+                     <td> Kiahok Ung </td>
+                     <td class="align_right"> 105317705 </td>
+                     <td> UX Designer </td>
+                     <td> Chips </td>
+                     <td> Perth </td>
+                   </tr>
+                 </tbody>
+               </table>
+             </section>   
+        <footer class="footer_container">
+          <a href="https://discord.com"><img class="footer_logo" src="images/discord.svg" alt="Our Discord server"></a>
+          <a href="https://jonahclydeswin.atlassian.net/jira/software/projects/SCRUM/boards/1/timeline"><img class="footer_logo" src="images/jira.svg" alt="Our Jira board"></a>
+          <a href="mailto:info@melonball.com"> <img class="footer_logo" src="images/email.svg" alt="Email us"></a>
+          <a href="https://github.com/ThankYouBonsai/Applied_Web_Project_G01.git"><img class="footer_logo" src="images/github-mark.png" alt="Github Repository"> </a>
+        </footer>
+    </body>
+</html>
