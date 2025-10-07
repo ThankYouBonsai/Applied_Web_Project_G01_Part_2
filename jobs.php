@@ -40,41 +40,8 @@
         </style>
     </head>
     <body>
-        <header>
-          <!-- Header -->
-          <!-- Hamburger Menu -->
-          <label class="hamburger_menu" for="hamburger">
-            <span class="hidden_text">hidden</span>
-            <input type="checkbox" name="hamburger" id="hamburger">
-          </label>
-          <div class="sidebar">
-            <nav>
-                <ul>
-                  <li><a href="jobs.html" class="activePage">Jobs</a></li>
-                  <li><a href="apply.html">Apply</a></li>
-                  <li><a href="about.html">About</a></li>
-                </ul>
-            </nav>
-          </div>
-          <!-- Normal Header -->
-          <div class="header_container">
-            <div class="nav_container">
-              <nav>
-                <ul>
-                  <li><a href="jobs.html" class="activePage">Jobs</a></li>
-                  <li><a href="apply.html">Apply</a></li>
-                  <li><a href="about.html">About</a></li>
-                </ul>
-              </nav>
-            </div>            
-            <div class="logo_container">
-              <a href="index.html"><img id="logo" src="images/Logo_Black.svg" alt="This is Melonballs Logo"></a>
-              <p>MELON<strong>BALL</strong></p>
-            </div>
-            <div class="right_spacer"></div>
-          </div>
-          <!-- End of Header -->
-        </header>
+        <!-- php Header with navigation menu-->
+        <?php include 'header.inc'; ?>
         <main>
           <!-- main site area -->
           <div class="jobs_container">
@@ -168,11 +135,7 @@
           </div>
           <!-- End of main site area -->
         </main>
-        <footer class="footer_container">
-          <a href="https://discord.com"><img class="footer_logo" src="images/discord.svg" alt="Our Discord server"></a>
-          <a href="https://jonahclydeswin.atlassian.net/jira/software/projects/SCRUM/boards/1/timeline"><img class="footer_logo" src="images/jira.svg" alt="Our Jira board"></a>
-          <a href="mailto:info@melonball.com"> <img class="footer_logo" src="images/email.svg" alt="Email us"></a>
-          <a href="https://github.com/ThankYouBonsai/Applied_Web_Project_G01.git"><img class="footer_logo" src="images/github-mark.png" alt="Github Repository"> </a>
-        </footer>
+        <!-- php Footer with links to Discord, Jira and email-->
+        <?php include 'footer.inc'; ?>
     </body>
 </html>
