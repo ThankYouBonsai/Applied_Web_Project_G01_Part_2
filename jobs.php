@@ -57,7 +57,7 @@
               </p>
             </aside> <!--  All titles and descriptions are AI generated -->
             <div class="jobs_selection">
-              <a class="apply_link" href="apply.html"><div class="jobs">
+              <a class="apply_link" href="apply.php"><div class="jobs">
                 <h1 class="job_title" style="color: rgb(201, 38, 74)"><strong>Environmental Designer</strong></h1> <!-- Job 1 -->
                 <div class="job_meta">
                   <p>Reference: MBZHJ</p>
@@ -94,7 +94,7 @@
                   </ul>
                 </div>
               </div></a>
-              <a class="apply_link" href="apply.html"><div class="jobs">
+              <a class="apply_link" href="apply.php"><div class="jobs">
                 <h1 class="job_title" style="color: rgb(201, 38, 74)"><strong>Unreal Engine & C++ Programmer</strong></h1> <!-- Job 2-->
                 <div class="job_meta">
                   <p>Reference: MBDEVT</p>
