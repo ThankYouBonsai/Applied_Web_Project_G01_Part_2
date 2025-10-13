@@ -99,16 +99,15 @@
                 // Execute the query
                 $result = mysqli_query($conn, $sql_query);
                 
-                // Check if the query was successful and if any rows were returned
+                // I still don't fully understand this part but this is what Atie and every tutorial I saw on the internet do when they want to run a while loop
                 if ($result && mysqli_num_rows($result) > 0) {
                     // Start the Loop: Iterate over every row returned from the database
                     while ($job = mysqli_fetch_assoc($result)) {
-                        // Decode JSON lists into PHP arrays
+                        // Decode mySQL TEXT list into PHP arrays <- For this to work the entry field need to be written as ["a","b","c","etc.."]
                         $requirements = json_decode($job['requirements'], true);
                         $responsibilities = json_decode($job['responsibilities'], true);
                         
-                        // Output the HTML structure using PHP variables
-                        ?> <!-- stop the php and go back to html -->
+                        ?> <!-- stop php and start html -->
                         <a class="apply_link" href="apply.php">
                             <section class="jobs">
 
@@ -129,34 +128,34 @@
 
                                 <section class="job_info">
                                   
-                                    <p>About the role: <br> <?php echo nl2br(htmlspecialchars($job['about_the_role'])); ?></p>
+                                    <p>About the role: <br> <?php echo nl2br(htmlspecialchars($job['about_the_role'])); ?></p> <!-- nl2br means new line to break or same as <br> in html -->
                                     
                                     <p><strong>Preferable Requirements:</strong></p>
                                     <ol>
                                       <?php 
-                                      // Loop through the requirements array
-                                      if (is_array($requirements)){ 
-                                          foreach ($requirements as $req){
-                                      ?>
-                                          <li><?php echo htmlspecialchars($req); ?></li>
-                                      <?php 
-                                          } 
-                                        } 
-                                      ?>
+                                      // Loop through all the array within the TEXT type mySQL automagically
+                                      if (is_array($requirements)){ // this part check if the TEXT type of mySQL is an array or not, not needed but good practice to avoid errors
+                                          foreach ($requirements as $req){ // this basically reads for each requirment in requirments execute below
+                                            ?>
+                                                <li><?php echo htmlspecialchars($req); ?></li>
+                                            <?php 
+                                                } 
+                                              } 
+                                            ?>
                                     </ol>
 
                                     <p><strong>Key Responsibilities:</strong></p>
                                     <ol>
                                       <?php 
-                                      // Loop through the responsibilities array
+                                      // Same as above but for the responsibility sections
                                       if (is_array($responsibilities)){ 
                                           foreach ($responsibilities as $resp){ 
-                                      ?>
-                                          <li><?php echo htmlspecialchars($resp); ?></li>
-                                      <?php 
-                                          } 
-                                        } 
-                                      ?>
+                                            ?>
+                                                <li><?php echo htmlspecialchars($resp); ?></li>
+                                            <?php 
+                                                } 
+                                              } 
+                                            ?>
                                     </ol>
 
                                     <p><strong>Reporting Line:</strong></p>
@@ -168,10 +167,10 @@
                         <?php //start the php again
                     } // End of the while loop
                 } else {
-                    // Message if no jobs are found
+                    // Message if no jobs are found <- this is a fail safe just incase the entry is empty
                     echo "<p>No job listings are currently available.</p>";
                 }
-                // Close the database connection
+                // Close the database connection <- idk too but ChatGPT said this is a good practice to do if other pages won't use this database
                 mysqli_close($conn); 
 
               ?>
