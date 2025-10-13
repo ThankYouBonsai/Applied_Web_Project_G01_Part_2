@@ -35,7 +35,35 @@
     </head>
     <body>
         <!-- php Header with navigation menu-->
-        <?php include 'header.inc'; ?>
+        <?php include 'header.inc'; 
+        
+        require_once('settings.php');
+
+        // Create connection
+        $conn = mysqli_connect($host, $user, $pwd, $sql_db);
+
+        // Check connection
+        if (!$conn) {
+          echo "<p>Database connection failed: " . mysqli_connect_error() . "</p>";
+        } else {
+          // Query to get friend data
+          $sql = "SELECT * FROM about";
+          $result = mysqli_query($conn, $sql);
+
+          // If there are results, display them
+          if ($result && mysqli_num_rows($result) > 0) 
+          {
+            while ($row = mysqli_fetch_assoc($result)) {
+              $id = htmlspecialchars($row['id']);
+              $first_name = htmlspecialchars($row['first_name']);
+              $last_name = htmlspecialchars($row['last_name']);
+
+            }
+          }
+
+
+        }
+        ?>
         <main>
             <h1> About </h1>
               <section class = "about-section">
@@ -55,7 +83,9 @@
             </figure>
             <!--Span for the languages I got from Google AI Summary-->
             <section class = "about-section">
-                <h2> James Ralph</h2>
+                <?php
+                echo "<h2> $first_name $last_name </h2>";
+                ?>
                 <dl>
                   <dt>Member Contributions</dt>
                   <dd>Contributed to scheduling meetings and correspondance with lecturer.</dd>

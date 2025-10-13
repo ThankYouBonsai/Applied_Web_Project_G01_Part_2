@@ -44,7 +44,26 @@
         <?php include 'header.inc'; ?>
         <main>
           <!-- main site area -->
-          <div class="jobs_container">
+          <section class="jobs_container">
+            
+            <?php 
+              error_reporting(E_ALL); //For debug
+              ini_set('display_error', 1); //For debug
+             
+              // require_once("setting.php")
+              $host = "localhost";
+              $user = "root";
+              $pwd = "";
+              $sql_db = "jobs_listing";
+              
+              $conn = mysqli_connect("localhost", "root", "", "jobs_listing");
+              if (!$conn) {
+                  die("Connection failed: " . mysqli_connect_error());
+                }
+
+            ?>
+
+          <!-- Aside -->
             <aside> <!-- Ai generated aside details -->
               <h2>Gaming for Everyone</h2>
               <p>At MelonBall, we believe gaming is for everyone. 
@@ -56,83 +75,109 @@
                 We want you to feel included from the moment you join us.
               </p>
             </aside> <!--  All titles and descriptions are AI generated -->
-            <div class="jobs_selection">
-              <a class="apply_link" href="apply.php"><div class="jobs">
-                <h1 class="job_title" style="color: rgb(201, 38, 74)"><strong>Environmental Designer</strong></h1> <!-- Job 1 -->
-                <div class="job_meta">
-                  <p>Reference: MBZHJ</p>
-                  <p>Location: Remote or On-site (Hybrid Options Available)</p>
-                  <p>Time: Casual</p>
-                  <p>Salary: $70,000 - $90,000 USD / year (DOE)</p>
-                </div>
-                <div class="job_desc">
-                  <p>MelonBall is seeking a talented and imaginative Environmental Designer to help shape the lush, immersive worlds at the heart of our tropical-inspired games. You’ll craft serene and visually striking environments that invite exploration and relaxation, blending stylized artistry with technical design.</p>
-                </div>
-                <div class="job_info">
-                  <p>About the role: <br> MelonBall is seeking a talented and imaginative Environmental Designer to help 
-                    shape the lush, immersive worlds at the heart of our tropical-inspired games. 
-                    You&apos;ll craft serene and visually striking environments that invite exploration 
-                    and relaxation, blending stylized artistry with technical design.
-                  </p>
-                  <p><strong>Essential Requirements:</strong></p>
-                  <ul>
-                    <li>3+ years of professional experience in 3D environmental design for games</li>
-                    <li>Strong portfolio showcasing stylized or naturalistic 3D environments</li>
-                    <li>Proficiency in Unreal Engine (particularly World Building tools and Level Streaming)</li>
-                    <li>Excellent understanding of composition, scale, lighting, and color theory</li>
-                    <li>Ability to work independently and collaboratively in a fast-paced, creative environment</li>
-                  </ul>
-                  <p><strong>Key Responsibilities:</strong></p>
-                  <ul>
-                    <li>Design and build immersive outdoor and indoor environments using Unreal Engine</li>
-                    <li>Create level layouts that balance beauty, gameplay flow, and storytelling</li>
-                    <li>Translate 2D concepts into compelling 3D scenes with strong composition and atmosphere</li>
-                    <li>Collaborate with lighting, animation, and VFX teams to achieve cohesive world design</li>
-                    <li>Optimize environments for performance and visual fidelity across platforms</li>
-                    <li>Contribute to environmental storytelling and the overall player journey</li>
-                    <li>Participate in playtests and iterate on feedback to refine world design</li>
-                  </ul>
-                </div>
-              </div></a>
-              <a class="apply_link" href="apply.php"><div class="jobs">
-                <h1 class="job_title" style="color: rgb(201, 38, 74)"><strong>Unreal Engine & C++ Programmer</strong></h1> <!-- Job 2-->
-                <div class="job_meta">
-                  <p>Reference: MBDEVT</p>
-                  <p>Location: Remote or On-site (Hybrid Options Available)</p>
-                  <p>Time: Casual</p>
-                  <p>Salary: $85,000 - $110,000 USD / year (DOE)</p>
-                </div>
-                <div class="job_desc">
-                  <p>MelonBall is looking for a skilled Unreal Engine & C++ Programmer to help bring our peaceful, tropical game worlds to life. You’ll build responsive, elegant systems and gameplay mechanics that feel smooth, intuitive, and deeply immersive.</p>
-                </div>
-                <div class="job_info">
-                  <p>About the role: <br> MelonBall is seeking a talented and imaginative Environmental Designer to help 
-                    shape the lush, immersive worlds at the heart of our tropical-inspired games. 
-                    You&apos;ll craft serene and visually striking environments that invite exploration 
-                    and relaxation, blending stylized artistry with technical design.
-                  </p>
-                  <p><strong>Essential Requirements:</strong></p>
-                  <ul>
-                    <li>3+ years of experience with Unreal Engine and C++ in game development</li>
-                    <li>Implement mechanics related to exploration, interaction, and world simulation</li>
-                    <li>Experience developing and optimizing gameplay systems</li>
-                    <li>Familiarity with Blueprints and how to bridge them with C++ code</li>
-                    <li>Ability to write clean, modular, and well-documented code</li>
-                  </ul>
-                  <p><strong>Key Responsibilities:</strong></p>
-                  <ul>
-                    <li>Develop and maintain gameplay systems in Unreal Engine using C++</li>
-                    <li>Create level layouts that balance beauty, gameplay flow, and storytelling</li>
-                    <li>Optimize game code for performance across PC, console, and mobile platforms</li>
-                    <li>Work closely with designers to prototype and refine new features</li>
-                    <li>Debug and resolve issues across the codebase</li>
-                    <li>Assist in integrating art and animation assets into the engine</li>
-                    <li>Contribute to internal documentation and development tools</li>
-                  </ul>
-                </div>
-              </div></a>
-            </div>
-          </div>
+          <!-- Aside -->
+
+            <section class="jobs_selection"> <!-- this area contains the job description and listing -->
+              
+              <?php 
+                
+                // Define the SQL Query
+                $sql_query = 
+                  "SELECT 
+                    title, 
+                    reference_code, 
+                    location,
+                    time_commitment, 
+                    salary_range, 
+                    short_description, 
+                    about_the_role, 
+                    requirements, 
+                    responsibilities,
+                    reporting_line
+                  FROM job_listings";
+
+                // Execute the query
+                $result = mysqli_query($conn, $sql_query);
+                
+                // I still don't fully understand this part but this is what Atie and every tutorial I saw on the internet do when they want to run a while loop
+                if ($result && mysqli_num_rows($result) > 0) {
+                    // Start the Loop: Iterate over every row returned from the database
+                    while ($job = mysqli_fetch_assoc($result)) {
+                        // Decode mySQL TEXT list into PHP arrays <- For this to work the entry field need to be written as ["a","b","c","etc.."]
+                        $requirements = json_decode($job['requirements'], true);
+                        $responsibilities = json_decode($job['responsibilities'], true);
+                        
+                        ?> <!-- stop php and start html -->
+                        <a class="apply_link" href="apply.php">
+                            <section class="jobs">
+
+                                <h1 class="job_title" style="color: rgb(201, 38, 74)">
+                                  <strong><?php echo htmlspecialchars($job['title']); ?></strong>
+                                </h1>
+                                
+                                <div class="job_meta">
+                                  <p>Reference: <?php echo htmlspecialchars($job['reference_code']); ?></p>
+                                  <p>Location: <?php echo htmlspecialchars($job['location']); ?></p>
+                                  <p>Time: <?php echo htmlspecialchars($job['time_commitment']); ?></p>
+                                  <p>Salary: <?php echo htmlspecialchars($job['salary_range']); ?></p>
+                                </div>
+
+                                <div class="job_desc">
+                                  <p><?php echo htmlspecialchars($job['short_description']); ?></p>
+                                </div>
+
+                                <section class="job_info">
+                                  
+                                    <p>About the role: <br> <?php echo nl2br(htmlspecialchars($job['about_the_role'])); ?></p> <!-- nl2br means new line to break or same as <br> in html -->
+                                    
+                                    <p><strong>Preferable Requirements:</strong></p>
+                                    <ol>
+                                      <?php 
+                                      // Loop through all the array within the TEXT type mySQL automagically
+                                      if (is_array($requirements)){ // this part check if the TEXT type of mySQL is an array or not, not needed but good practice to avoid errors
+                                          foreach ($requirements as $req){ // this basically reads for each requirment in requirments execute below
+                                            ?>
+                                                <li><?php echo htmlspecialchars($req); ?></li>
+                                            <?php 
+                                                } 
+                                              } 
+                                            ?>
+                                    </ol>
+
+                                    <p><strong>Key Responsibilities:</strong></p>
+                                    <ol>
+                                      <?php 
+                                      // Same as above but for the responsibility sections
+                                      if (is_array($responsibilities)){ 
+                                          foreach ($responsibilities as $resp){ 
+                                            ?>
+                                                <li><?php echo htmlspecialchars($resp); ?></li>
+                                            <?php 
+                                                } 
+                                              } 
+                                            ?>
+                                    </ol>
+
+                                    <p><strong>Reporting Line:</strong></p>
+                                    <p><?php echo nl2br(htmlspecialchars($job['reporting_line'])); ?></p>
+
+                                </section>
+                            </section>
+                        </a>
+                        <?php //start the php again
+                    } // End of the while loop
+                } else {
+                    // Message if no jobs are found <- this is a fail safe just incase the entry is empty
+                    echo "<p>No job listings are currently available.</p>";
+                }
+                // Close the database connection <- idk too but ChatGPT said this is a good practice to do if other pages won't use this database
+                mysqli_close($conn); 
+
+              ?>
+
+            </section>
+
+          </section>
           <!-- End of main site area -->
         </main>
         <!-- php Footer with links to Discord, Jira and email-->
