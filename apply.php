@@ -44,23 +44,23 @@ A Requirement given by the industry guest lecturer.
             <div class="background-red">
                 <h1 id="applicationTitle">Application form</h1>
                 <!-- POST form to "formtest.php"-->
-                <form action="formtest.php" method="post">
+                <form action="process_eoi.php" method="post">
 
                   <!-- Job Reference Number (Exactly 5 Alphanumeric Characters) -->
                   <label for="referenceNumber">Job Reference Number: </label>
-                  <input type="text" id="referenceNumber" pattern="[a-zA-Z]{5}" class="align_right" required>
+                  <input type="text" id="referenceNumber" class="align_right" required>
 
                   <div class="flex-break"></div>
 
                   <!-- First Name (Max 20 Alphanumeric Characters) -->
                   <label for="firstName">First Name: </label>
-                  <input type="text" id="firstName" pattern="[a-zA-Z]{1,20}" class="align_right" required>
+                  <input type="text" id="firstName" class="align_right" required>
 
                   <div class="flex-break"></div>
 
                   <!-- Last Name (Max 20 Alphanumeric Characters) -->
                   <label for="lastName">Last Name: </label>
-                  <input type="text" id="lastName" pattern="[a-zA-Z]{1,20}" class="align_right" required>
+                  <input type="text" id="lastName" class="align_right" required>
 
                   <div class="flex-break"></div>
 
@@ -76,13 +76,13 @@ A Requirement given by the industry guest lecturer.
 
                   <!-- Street Address (Max 40 Characters)-->
                   <label for="address">Address: </label>
-                  <input type="text" id="address" pattern=".{1,40}" class="align_right" required>
+                  <input type="text" id="address" class="align_right" required>
                   
                   <div class="flex-break"></div>
 
                   <!-- Suburb/Town (Max 40 Characters)-->
                   <label for="suburb">Suburb: </label>
-                  <input type="text" id="suburb" pattern=".{1,40}" class="align_right" required>
+                  <input type="text" id="suburb" class="align_right" required>
 
                   <div class="flex-break"></div>
 
@@ -104,7 +104,7 @@ A Requirement given by the industry guest lecturer.
 
                   <!-- Postcode (Exactly 4 digits)-->
                   <label for="postcode">Postcode: </label>
-                  <input type="text" maxlength="4" minlength="4" id="postcode" pattern="[0-9]{4}" class="align_right" required>
+                  <input type="text" maxlength="4" minlength="4" id="postcode" class="align_right" required>
 
                   <div class="flex-break"></div>
 
@@ -116,7 +116,7 @@ A Requirement given by the industry guest lecturer.
 
                   <!-- Phone Number (8-12 Digits) -->
                   <label for="number">Phone Number: </label>
-                  <input type="text" id="number" pattern="[0-9]{8,12}" class="align_right" required>
+                  <input type="text" id="number" class="align_right" required>
 
                   <div class="flex-break"></div>
 
