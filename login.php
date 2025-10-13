@@ -8,9 +8,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     // Query to find the user by username
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE username = :username');
-    $stmt->execute(['username' => $username]);
-    $user = $stmt->fetch();
+    $stmt = $dbconn->prepare('SELECT * FROM users WHERE username = ?');
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
 
     if ($user && password_verify($password, $user['password'])) {
         // If the user is found and the password matches, start a session
