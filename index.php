@@ -101,7 +101,7 @@
                       escape after a long day.
                   </p>
                 <!--anchor tag that the embedded CSS underlines. Takes to jobs.html-->
-                <h2><a href="jobs.html"> Join us on This Journey</a></h2>
+                <h2><a href="jobs.php"> Join us on This Journey</a></h2>
                   <p>
                       MELONBALL is more than a game studio. We're a team of artists, developers, 
                       and storytellers with a shared vision: to make games that bring joy, calm, 

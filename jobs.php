@@ -51,12 +51,10 @@
               ini_set('display_error', 1); //For debug
              
               // require_once("setting.php")
-              $host = "localhost";
-              $user = "root";
-              $pwd = "";
-              $sql_db = "jobs_listing";
+              require_once('settings.php');
+              // Create connection  
               
-              $conn = mysqli_connect("localhost", "root", "", "jobs_listing");
+              $conn = mysqli_connect($host, $user, $pwd, $sql_db);
               if (!$conn) {
                   die("Connection failed: " . mysqli_connect_error());
                 }
