@@ -49,7 +49,6 @@
         <main>
             <?php
             session_start();
-            include ("header.inc");
             require_once 'settings.php';
             $dbconn = @mysqli_connect($host, $user, $pwd, $sql_db);
             
