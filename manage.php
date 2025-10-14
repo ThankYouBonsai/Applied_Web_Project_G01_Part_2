@@ -50,34 +50,27 @@
             <?php
             session_start();
             require_once 'settings.php';
-
-            // mysqli connection
             $dbconn = @mysqli_connect($host, $user, $pwd, $sql_db);
-            if (!$dbconn) {
-                die("Connection failed: " . mysqli_connect_error());
-            }
+            
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $username = $_POST['username'];
+                    $password = $_POST['password'];
 
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $username = $_POST['username'];
-                $password = $_POST['password'];
+                    // Query to find the user by username
+                    $stmt = $pdo->prepare('SELECT * FROM users WHERE username = :username');
+                    $stmt->execute(['username' => $username]);
+                    $user = $stmt->fetch();
 
-                // Prepared statement with mysqli
-                $stmt = mysqli_prepare($dbconn, "SELECT * FROM users WHERE username = ?");
-                mysqli_stmt_bind_param($stmt, 's', $username); // 's' means the parameter is a string
-                mysqli_stmt_execute($stmt);
-                $result = mysqli_stmt_get_result($stmt);
-                $user = mysqli_fetch_assoc($result);
-
-                if ($user && password_verify($password, $user['password'])) {
-                    // Valid user
-                    $_SESSION['username'] = $username;
-                    header('Location: manage.php');
-                    exit();
-                } else {
-                    echo 'Invalid credentials';
+                    if ($user && password_verify($password, $user['password'])) {
+                        // If the user is found and the password matches, start a session
+                        $_SESSION['username'] = $username;
+                        header('Location: manage.php'); // Redirect to the admin page
+                    } else {
+                        echo 'Invalid credentials';
+                    }
                 }
-            }
-            ?>
+                ?>
+
                 <form method="POST" action="">
                     <label for="username">Username</label>
                     <input type="text" name="username" required>
@@ -85,7 +78,9 @@
                     <input type="password" name="password" required>
                     <input type="submit" value="Login">
                 </form>
-            <?php include ("footer.inc"); ?>
+                <?php
+                include ("footer.inc");
+                ?>
         </main>
     </body>
 </html>
