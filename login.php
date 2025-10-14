@@ -31,5 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <input type="password" name="password" required>
     <input type="submit" value="Login">
 </form>
+<?php
 include ("footer.inc");
 ?>
