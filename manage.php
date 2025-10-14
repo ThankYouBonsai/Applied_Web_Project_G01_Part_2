@@ -1,7 +1,7 @@
 <?php
 session_start();
 include ("header.inc");
-require_once 'settings_manage.php';
+require_once 'settings.php';
 $dbconn = @mysqli_connect($host, $user, $pwd, $sql_db);
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
