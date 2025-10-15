@@ -31,6 +31,7 @@ CREATE TABLE `about` (
   `id` int(11) NOT NULL,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
+  `lang` varchar(100) NOT NULL,
   `quote_lang` text NOT NULL,
   `quote_eng` text NOT NULL,
   `snack` text NOT NULL,
@@ -44,11 +45,12 @@ CREATE TABLE `about` (
 -- Dumping data for table `about`
 --
 
-INSERT INTO `about` (`id`, `first_name`, `last_name`, `quote_lang`, `quote_eng`, `snack`, `part_one_cont`, `part_two_cont`, `dream_job`, `hometown`) VALUES
-(105317705, 'Kiahok', 'Ung', 'ដំរី​ជើង​បួន គង់​មាន​ភ្លាត់ អ្នកប្រាជ្ញ​ចេះ​ស្ទាត់ គង់​មាន​ភ្លេច', 'A four-legged elephant can still fall, a wise man who\'s knowledgeable can still forget.', 'Chips', 'Contributed with the website mock up design, header and footer css, jobs.html and css\r\nportion of it. Code for the website consistency and mobile view.', '', 'UX Designer', 'Perth'),
-(105671294, 'Jonah', 'Clyde', '日本語: 猿も木から落ちる', 'Even a monkey falls down from trees', 'Ice-cream', 'Contributed towards making the jira as well as organising the sprints. For the webpage, I went into apply.html and apply_styles.css, which is a form for people applying for a job at MelonBall :)', '', 'Software Engineer', 'Melbourne'),
-(105739480, 'Duc', 'Vo', 'Nhìn người Việt bay mà không cần cánh kìa!', 'Look at the Vietnamese flying without wings!', 'Bubble Tea', 'Contributed on making about.html and about.css', '', 'Data Scientist', 'Brisbane'),
-(105874572, 'James', 'Ralph', '\"Finché c\'è vita c\'è speranza\"', '\"While there\'s life, there\'s hope\"', 'HSP', 'The delegation of duties was also handled by Jonah and me. For our webpage my responsibilities were for the company details(Who is the company, job details etc), the index.html and relevant CSS.', '', 'Audio Director/Programmer', 'Brisbane');
+INSERT INTO `about` (`id`, `first_name`, `last_name`, `lang`, `quote_lang`, `quote_eng`, `snack`, `part_one_cont`, `part_two_cont`, `dream_job`, `hometown`) VALUES
+(105317705, 'Kiahok', 'Ung', 'Khhmer:', 'ដំរី​ជើង​បួន គង់​មាន​ភ្លាត់ អ្នកប្រាជ្ញ​ចេះ​ស្ទាត់ គង់​មាន​ភ្លេច', 'A four-legged elephant can still fall, a wise man who\'s knowledgeable can still forget.', 'Chips', 'Contributed with the website mock up design, header and footer css, jobs.html and css\r\nportion of it. Code for the website consistency and mobile view.', '', 'UX Designer', 'Perth'),
+(105671294, 'Jonah', 'Clyde', 'Japanese:', '日本語: 猿も木から落ちる', 'Even a monkey falls down from trees', 'Ice-cream', 'Contributed towards making the jira as well as organising the sprints. For the webpage, I went into apply.html and apply_styles.css, which is a form for people applying for a job at MelonBall :)', '', 'Software Engineer', 'Melbourne'),
+(105739480, 'Duc', 'Vo', 'Tiếng Việt:', 'Nhìn người Việt bay mà không cần cánh kìa!', 'Look at the Vietnamese flying without wings!', 'Bubble Tea', 'Contributed on making about.html and about.css', '', 'Data Scientist', 'Brisbane'),
+(105874572, 'James', 'Ralph', 'Italian:', '\"Finché c\'è vita c\'è speranza\"', '\"While there\'s life, there\'s hope\"', 'HSP', 'The delegation of duties was also handled by Jonah and me. For our webpage my responsibilities were for the company details(Who is the company, job details etc), the index.html and relevant CSS.', '', 'Audio Director/Programmer', 'Brisbane');
+
 
 -- --------------------------------------------------------
 
