@@ -34,8 +34,31 @@
         <title> About </title>
     </head>
     <body>
-        <!-- php Header with navigation menu-->
-        <?php include 'header.inc'; 
+
+    <main>
+      <!-- php Header with navigation menu-->
+      <?php include 'header.inc'; ?> 
+
+      <h1> About </h1>
+        <section class = "about-section">
+          <h2>Group Information</h2>
+          <ul>
+            <li>Group Name:  MelonBall
+              <ul>
+                <li>Class Day: Thursday</li>
+                <li>Class Time: 12:30 PM – 2:30 PM</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+
+      <figure class = "photo-box">
+          <img class="group-photo" src="images/group_photo.jpeg" width="220"alt="Group Photo">
+          <figcaption> Our Group Photo </figcaption>
+      </figure>
+
+      <section class = "about-section">
+      <?php 
         
         require_once('settings.php');
 
@@ -45,90 +68,45 @@
         // Check connection
         if (!$conn) {
           echo "<p>Database connection failed: " . mysqli_connect_error() . "</p>";
-        } else {
+        }
+        else 
+        {
           // Query to get friend data
           $sql = "SELECT * FROM about";
           $result = mysqli_query($conn, $sql);
-
+ 
           // If there are results, display them
           if ($result && mysqli_num_rows($result) > 0) 
           {
+
+            $lang_html = array("km", "ja", "vi", "it");
+            $index = 0;
+
             while ($row = mysqli_fetch_assoc($result)) {
-              $id = htmlspecialchars($row['id']);
               $first_name = htmlspecialchars($row['first_name']);
               $last_name = htmlspecialchars($row['last_name']);
+              $lang = htmlspecialchars($row['lang']);
+              $quote_lang = htmlspecialchars($row['quote_lang']);
+              $quote_eng = htmlspecialchars($row['quote_eng']);
+              $member_cont_one = htmlspecialchars($row['part_one_cont']);
+              $member_cont_two = htmlspecialchars($row['part_two_cont']);
 
+              echo "<h2> $first_name $last_name </h2>";
+              echo "<dl>
+                      <dt>Member Contributions 1:</dt>
+                      <dd>$member_cont_one</dd>
+                      <dt>Member Contributions 2:</dt>
+                      <dd>$member_cont_two</dd>
+                      <dt> Quote </dt>
+                      <dd>$lang <span lang='{$lang_html[$index]}'>$quote_lang</span></dd>
+                      <dd>English: $quote_eng</dd>
+                    </dl>";
+              $index += 1;
             }
-          }
 
-
-        }
-        ?>
-        <main>
-            <h1> About </h1>
-              <section class = "about-section">
-                <h2>Group Information</h2>
-                <ul>
-                  <li>Group Name:  MelonBall
-                    <ul>
-                      <li>Class Day: Thursday</li>
-                      <li>Class Time: 12:30 PM – 2:30 PM</li>
-                    </ul>
-                  </li>
-                </ul>
-              </section>
-            <figure class = "photo-box">
-                <img class="group-photo" src="images/group_photo.jpeg" width="220"alt="Group Photo">
-                <figcaption> Our Group Photo </figcaption>
-            </figure>
-            <!--Span for the languages I got from Google AI Summary-->
-            <section class = "about-section">
-                <?php
-                echo "<h2> $first_name $last_name </h2>";
-                ?>
-                <dl>
-                  <dt>Member Contributions</dt>
-                  <dd>Contributed to scheduling meetings and correspondance with lecturer.</dd>
-                  <dd>The delagation of duties was also handled by Jonah and me. For our webpage my 
-                  responsibilities were for the company details(Who is the company, job details etc),
-                  the index.html and relevant CSS. </dd>
-                  <dt> Quote </dt>
-                  <dd>Italian: <span lang="it">"Finché c'è vita c'è speranza"</span></dd>
-                  <dd>English: "While there's life, there's hope"</dd>
-                </dl>
-                <h2> Jonah Clyde</h2>
-                <dl>
-                  <dt>Member Contributions</dt>
-                  <dd>Contributed towards making the jira as well as organising the sprints. 
-                      for the webpage, i went into apply.html and apply_styles.css, which is
-                      a form for people applying for a job at melonball :)</dd>
-                  <dt> Quote </dt>
-                  <dd> Japanese: <span lang="ja">日本語: 猿も木から落ちる</span></dd>
-                  <dd> English: Even a monkey falls down from trees</dd>
-                </dl>
-                <h2> Duc Vo</h2>
-                <dl>
-                  <dt>Member Contributions</dt>
-                  <dd>Contributed on making about.html and about.css</dd>
-                  <dt> Quote </dt>
-                  <dd> Tiếng Việt: <span lang="vi">"Nhìn người Việt bay mà không cần cánh kìa!"</span></dd>
-                  <dd> English: "Look at the Vietnamese flying without wings!" </dd>
-                </dl>
-                <h2>Kiahok Ung</h2>
-                <dl >
-                  <dt>Member Contributions</dt>
-                  <dd>Contributed with the website mock up design, header and footer css, jobs.html and css 
-                      portion of it. Code for the website consistency and mobile view. </dd>
-                  <dt> Quote </dt>
-                  <dd>Khhmer: <span lang="km">ដំរី​ជើង​បួន គង់​មាន​ភ្លាត់ អ្នកប្រាជ្ញ​ចេះ​ស្ទាត់ គង់​មាន​ភ្លេច"</span></dd>
-                  <dd>English:“A four-legged elephant can still fall, a wise man who's knowledgeable can still forget.”</dd>
-                </dl>
-            </section>
-        </main>
-            <section class = "about-section">
-            <table>
-                 <caption>Fun Facts</caption>
-                 <thead>
+            echo "<section class = 'about-section'>
+                  <table>
+                  <thead>
                    <tr>
                      <th> Name </th>
                      <th> Student ID </th>
@@ -136,39 +114,36 @@
                      <th> Coding Snack </th>
                      <th> Hometown </th>
                    </tr>
-                 <tbody>
-                   <tr>
-                     <td> James Ralph </td>
-                     <td class="align_right"> 105874572 </td>
-                     <td> Audio Director/Programmer</td>
-                     <td> HSP </td>
-                     <td> Brisbane </td>
-                   </tr>
-                   <tr>
-                     <td> Jonah Clyde </td>
-                     <td class="align_right"> 105671294 </td>
-                     <td> Software Engineer </td>
-                     <td> Ice Cream </td>
-                     <td> Melbourne </td>
-                   </tr>
-                   <tr>
-                     <td> Duc Vo </td>
-                     <td class="align_right"> 105739480 </td>
-                     <td> Data Scientist </td>
-                     <td> Bubble Tea </td>
-                     <td> Brisbane </td>
-                   </tr>
-                   <tr>
-                     <td> Kiahok Ung </td>
-                     <td class="align_right"> 105317705 </td>
-                     <td> UX Designer </td>
-                     <td> Chips </td>
-                     <td> Perth </td>
-                   </tr>
-                 </tbody>
-               </table>
-             </section>   
-        <!-- php Footer with links to Discord, Jira and email-->
-        <?php include 'footer.inc'; ?>
+                 <tbody>";
+            // Used ChatGPT to help me reset the row array
+            mysqli_data_seek($result, 0); // Reset result pointer to the beginning
+
+            while ($row = mysqli_fetch_assoc($result)) {
+              $id = htmlspecialchars($row['id']);
+              $first_name = htmlspecialchars($row['first_name']);
+              $last_name = htmlspecialchars($row['last_name']);
+              $dream_job = htmlspecialchars($row['dream_job']);
+              $snack = htmlspecialchars($row['snack']);
+              $hometown = htmlspecialchars($row['hometown']);
+
+              echo "<tr>
+                      <td> $first_name $last_name </td>
+                      <td class='align_right'> $id </td>
+                      <td> $dream_job </td>
+                      <td> $snack </td>
+                      <td> $hometown </td>
+                    </tr>";
+            }
+            echo "</tbody></table></section>";
+          }
+          else {
+            echo "<p>No member data found.</p>";
+          }
+        }
+      ?>
+      </section>
+    </main>
+    <!-- php Footer with links to Discord, Jira and email-->
+    <?php include 'footer.inc'; ?>
     </body>
 </html>

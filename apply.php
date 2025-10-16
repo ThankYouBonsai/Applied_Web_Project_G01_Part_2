@@ -48,19 +48,19 @@ A Requirement given by the industry guest lecturer.
 
                   <!-- Job Reference Number (Exactly 5 Alphanumeric Characters) -->
                   <label for="referenceNumber">Job Reference Number: </label>
-                  <input type="text" id="referenceNumber" class="align_right" required>
+                  <input type="text" id="referenceNumber" name="referenceNumber" class="align_right" required>
 
                   <div class="flex-break"></div>
 
                   <!-- First Name (Max 20 Alphanumeric Characters) -->
                   <label for="firstName">First Name: </label>
-                  <input type="text" id="firstName" class="align_right" required>
+                  <input type="text" id="firstName" name="firstName" class="align_right" required>
 
                   <div class="flex-break"></div>
 
                   <!-- Last Name (Max 20 Alphanumeric Characters) -->
                   <label for="lastName">Last Name: </label>
-                  <input type="text" id="lastName" class="align_right" required>
+                  <input type="text" id="lastName" name="lastName" class="align_right" required>
 
                   <div class="flex-break"></div>
 
@@ -76,13 +76,13 @@ A Requirement given by the industry guest lecturer.
 
                   <!-- Street Address (Max 40 Characters)-->
                   <label for="address">Address: </label>
-                  <input type="text" id="address" class="align_right" required>
+                  <input type="text" id="address" name="address" class="align_right" required>
                   
                   <div class="flex-break"></div>
 
                   <!-- Suburb/Town (Max 40 Characters)-->
                   <label for="suburb">Suburb: </label>
-                  <input type="text" id="suburb" class="align_right" required>
+                  <input type="text" id="suburb" name="suburb" class="align_right" required>
 
                   <div class="flex-break"></div>
 
@@ -104,7 +104,7 @@ A Requirement given by the industry guest lecturer.
 
                   <!-- Postcode (Exactly 4 digits)-->
                   <label for="postcode">Postcode: </label>
-                  <input type="text" maxlength="4" minlength="4" id="postcode" class="align_right" required>
+                  <input type="text" maxlength="4" minlength="4" id="postcode" name="postcode" class="align_right" required>
 
                   <div class="flex-break"></div>
 
@@ -116,12 +116,12 @@ A Requirement given by the industry guest lecturer.
 
                   <!-- Phone Number (8-12 Digits) -->
                   <label for="number">Phone Number: </label>
-                  <input type="text" id="number" class="align_right" required>
+                  <input type="text" id="number" name="number" class="align_right" required>
 
                   <div class="flex-break"></div>
 
                   <!-- Skill List (Checkbox inputs) + inline CSS Example-->
-                   <fieldset>
+                  <fieldset>
                   <legend style="margin-top: 15px;">Skill List:</legend>
                   <div class="aligncheckboxright">
                     <label for="teamwork"><input type="checkbox" value="teamwork" id="teamwork" name="skills">Teamworking Skills</label>
@@ -138,7 +138,7 @@ A Requirement given by the industry guest lecturer.
                   <div class="flex-break"></div>
 
                   <label for="otherskills" id="otherskillslabel">Other Skills: </label>
-                  <textarea id="otherskills" cols="50" rows="4"></textarea>
+                  <textarea id="otherskills" cols="50" rows="4" name="otherskills"></textarea>
                   
                   <div class="flex-break"></div>
                   
