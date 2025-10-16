@@ -8,9 +8,9 @@
     <div class="sidebar">
     <nav>
         <ul>
-            <li class ="jobs"><a href="jobs.php">Jobs</a></li>
-            <li class ="apply"><a href="apply.php">Apply</a></li>
-            <li class ="about"><a href="about.php">About</a></li>
+            <li><a href="jobs.php">Jobs</a></li>
+            <li><a href="apply.php">Apply</a></li>
+            <li><a href="about.php">About</a></li>
         </ul>
     </nav>
     </div>
