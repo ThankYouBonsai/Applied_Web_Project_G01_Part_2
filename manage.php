@@ -1,3 +1,136 @@
+<?php
+
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
+ob_start();
+
+// Optional logout
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+    $_SESSION = [];
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+    }
+    session_destroy();
+    header("Location: " . strtok($_SERVER['REQUEST_URI'], '?'));
+    exit;
+}
+
+// If already logged in, continue to page body
+if (!empty($_SESSION['username'])) {
+    // user is authenticated; fall through to original page content
+} else {
+    // Process login if POSTed
+    $login_error = '';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $username = trim($_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
+
+        if ($username === '' || $password === '') {
+            $login_error = 'Please enter both username and password.';
+        } else {
+            // Connect DB
+            require_once __DIR__ . '/settings.php'; // expects $host, $user, $pwd, $sql_db
+            $dbconn = @mysqli_connect($host ?? null, $user ?? null, $pwd ?? null, $sql_db ?? null);
+            if (!$dbconn) {
+                $login_error = 'Database connection failed: ' . htmlspecialchars(mysqli_connect_error());
+            } else {
+                // Lookup by username only
+                $sql = 'SELECT username, password FROM users WHERE username = ? LIMIT 1';
+                if ($stmt = mysqli_prepare($dbconn, $sql)) {
+                    mysqli_stmt_bind_param($stmt, 's', $username);
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $user = mysqli_fetch_assoc($result);
+                    mysqli_free_result($result);
+                    mysqli_stmt_close($stmt);
+
+                    $ok = false;
+                    if ($user) {
+                        $stored = $user['password'];
+                        $info = password_get_info($stored);
+                        if (!empty($info['algo'])) {
+                            // hashed
+                            $ok = password_verify($password, $stored);
+                        } else {
+                            // plaintext fallback
+                            $ok = hash_equals($stored, $password);
+                        }
+                    }
+
+                    if ($ok) {
+                        session_regenerate_id(true);
+                        $_SESSION['username'] = $username;
+                        // Redirect to clean POST -> GET
+                        header('Location: ' . $_SERVER['REQUEST_URI']);
+                        exit;
+                    } else {
+                        $login_error = 'Invalid username or password.';
+                    }
+                } else {
+                    $login_error = 'Query error: could not prepare statement.';
+                }
+            }
+        }
+    }
+
+    // Render login page and exit
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 0; background: #0a0a0a; color: #eee; }
+            main { max-width: 480px; margin: 64px auto; padding: 24px; background: #151515; border-radius: 12px; }
+            h1 { margin-top: 0; }
+            form { display: grid; gap: 12px; }
+            label { font-size: 14px; color: #bbb; }
+            input[type="text"], input[type="password"] {
+                width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #333; background: #111; color: #eee;
+            }
+            input[type="submit"] {
+                padding: 10px 14px; border: 0; border-radius: 8px; cursor: pointer;
+            }
+            .btn { background: #2e7d32; color: white; }
+            .error { background: #4a1c1c; color: #ffb3b3; padding: 10px; border-radius: 8px; margin-bottom: 12px; }
+            .hint { font-size: 12px; color: #999; }
+            a { color: #9ad; text-decoration: none; }
+            a:hover { text-decoration: underline; }
+        </style>
+    </head>
+    <body>
+    <?php if (file_exists(__DIR__ . '/header.inc')) include __DIR__ . '/header.inc'; ?>
+    <main>
+        <h1>Sign in</h1>
+        <?php if (!empty($login_error)): ?>
+            <div class="error"><?php echo htmlspecialchars($login_error); ?></div>
+        <?php endif; ?>
+        <form method="POST" action="">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>" autofocus>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <input type="submit" class="btn" value="Login">
+        </form>
+
+        <p class="hint">
+            Tip for testing: Ensure your <code>users</code> table has either a plaintext password or a hash.
+            For plaintext:<br>
+            <code>INSERT INTO users (username, password) VALUES ('admin', 'admin');</code><br>
+            For hashed (recommended), generate with <code>password_hash()</code>.
+        </p>
+    </main>
+    <?php if (file_exists(__DIR__ . '/footer.inc')) include __DIR__ . '/footer.inc'; ?>
+    </body>
+    </html>
+    <?php
+    // stop the rest of the page from rendering
+    exit;
+}
+// === End Auth guard ===
+?>
 <html lang="en">
     <head>
 
