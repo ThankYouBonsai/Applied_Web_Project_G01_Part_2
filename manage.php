@@ -1,6 +1,9 @@
 <?php
+// === Auth guard inserted by ChatGPT ===
+// Merges secure login into manage.php. Requires settings.php providing $host, $user, $pwd, $sql_db.
 
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
+// Start session and output buffering BEFORE any output
+if (session_status() === PHP_SESSION_NONE) { if (session_status() === PHP_SESSION_NONE) { session_start(); } }
 ob_start();
 
 // Optional logout
@@ -82,24 +85,22 @@ if (!empty($_SESSION['username'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login</title>
         <style>
-          .index_rightpanel h2 {
-            color: #ffffff;
-          }
-
-          .index_rightpanel p {
-            color: #ffffff;
-            font-weight: lighter;
-          }
-
-          .index_rightpanel a {
-            color: #ffffff;
-            text-decoration: none;
-          }
-
-          .index_rightpanel a:hover {
-            text-decoration: underline;
-            text-decoration-color: rgb(103, 147, 161);
-          }
+            body { font-family: Arial, sans-serif; margin: 0; background: #0a0a0a; color: #eee; }
+            main { max-width: 480px; margin: 64px auto; padding: 24px; background: #151515; border-radius: 12px; }
+            h1 { margin-top: 0; }
+            form { display: grid; gap: 12px; }
+            label { font-size: 14px; color: #bbb; }
+            input[type="text"], input[type="password"] {
+                width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #333; background: #111; color: #eee;
+            }
+            input[type="submit"] {
+                padding: 10px 14px; border: 0; border-radius: 8px; cursor: pointer;
+            }
+            .btn { background: #2e7d32; color: white; }
+            .error { background: #4a1c1c; color: #ffb3b3; padding: 10px; border-radius: 8px; margin-bottom: 12px; }
+            .hint { font-size: 12px; color: #999; }
+            a { color: #9ad; text-decoration: none; }
+            a:hover { text-decoration: underline; }
         </style>
     </head>
     <body>
@@ -183,7 +184,7 @@ if (!empty($_SESSION['username'])) {
 
         <main>
             <?php
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) { session_start(); }
             require_once 'settings.php';
 
             $dbconn = @mysqli_connect($host, $user, $pwd, $sql_db);
