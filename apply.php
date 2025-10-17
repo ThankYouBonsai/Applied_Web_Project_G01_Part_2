@@ -110,7 +110,7 @@ A Requirement given by the industry guest lecturer.
 
                   <!-- Email (valid format) -->
                   <label for="email">Email: </label>
-                  <input type="email" id="email" class="align_right" required>
+                  <input type="email" id="email" name="email" class="align_right" required>
 
                   <div class="flex-break"></div>
 
@@ -124,15 +124,15 @@ A Requirement given by the industry guest lecturer.
                   <fieldset>
                   <legend style="margin-top: 15px;">Skill List:</legend>
                   <div class="aligncheckboxright">
-                    <label for="teamwork"><input type="checkbox" value="teamwork" id="teamwork" name="skills">Teamworking Skills</label>
-                    <label for="experience"><input type="checkbox" value="experience" id="experience" name="skills">Experience</label>
+                    <label><input type="checkbox" value="teamwork" id="teamwork" name="skills[]">Teamworking Skills</label>
+                    <label><input type="checkbox" value="experience" id="experience" name="skills[]">Experience</label>
                   </div>
 
                   <div class="flex-break"></div>
 
                   <div class="aligncheckboxright2">
-                    <label for="ux"><input type="checkbox" value="ux" id="ux" name="skills">User Expererience</label>
-                    <label for="others"><input type="checkbox" value="others" id="others" name="skills">Other Skills</label>
+                    <label><input type="checkbox" value="ux" id="ux" name="skills[]">User Expererience</label>
+                    <label><input type="checkbox" value="others" id="others" name="skills[]">Other Skills</label>
                   </div>
                   </fieldset>
                   <div class="flex-break"></div>
