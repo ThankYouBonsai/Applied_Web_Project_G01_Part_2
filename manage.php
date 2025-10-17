@@ -57,7 +57,7 @@
             if (!$dbconn) {
                 die("Connection failed: " . mysqli_connect_error());
             }
-
+            
             // Check if user is logged in
             if (!isset($_SESSION['username'])) {
                 header('Location: login.php');
