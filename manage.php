@@ -135,7 +135,7 @@ if (!empty($_SESSION['username'])) {
             To test quickly, ensure your <code>users</code> table includes admin/admin (plaintext) or a hashed password.
         </p>
     </main>
-    <?php include_once 'footer.inc'; ?>
+    <?php include 'footer.inc'; ?>
     </body>
     </html>
     <?php
