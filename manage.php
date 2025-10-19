@@ -1,28 +1,39 @@
 <?php
-// === Auth guard inserted by ChatGPT ===
-// Merges secure login into manage.php. Requires settings.php providing $host, $user, $pwd, $sql_db.
 
-// Start session and output buffering BEFORE any output
+
 if (session_status() === PHP_SESSION_NONE) { if (session_status() === PHP_SESSION_NONE) { session_start(); } }
 ob_start();
 
-// Optional logout
+// Optional logout via query: manage.php?action=logout
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     $_SESSION = [];
-    if (ini_get("session.use_cookies")) {
+    if (ini_get('session.use_cookies')) {
         $params = session_get_cookie_params();
-        setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+        setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
     }
     session_destroy();
     header("Location: " . strtok($_SERVER['REQUEST_URI'], '?'));
     exit;
 }
 
-// If already logged in, continue to page body
+// If already logged in, continue; else show login form.
 if (!empty($_SESSION['username'])) {
-    // user is authenticated; fall through to original page content
+    // --- One-request login: force re-login on refresh ---
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    register_shutdown_function(function () {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION = [];
+            if (ini_get('session.use_cookies')) {
+                $p = session_get_cookie_params();
+                setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
+            }
+            session_destroy();
+        }
+    });
 } else {
-    // Process login if POSTed
+    // Handle login POST
     $login_error = '';
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = trim($_POST['username'] ?? '');
@@ -31,13 +42,11 @@ if (!empty($_SESSION['username'])) {
         if ($username === '' || $password === '') {
             $login_error = 'Please enter both username and password.';
         } else {
-            // Connect DB
             require_once __DIR__ . '/settings.php'; // expects $host, $user, $pwd, $sql_db
             $dbconn = @mysqli_connect($host ?? null, $user ?? null, $pwd ?? null, $sql_db ?? null);
             if (!$dbconn) {
                 $login_error = 'Database connection failed: ' . htmlspecialchars(mysqli_connect_error());
             } else {
-                // Lookup by username only
                 $sql = 'SELECT username, password FROM users WHERE username = ? LIMIT 1';
                 if ($stmt = mysqli_prepare($dbconn, $sql)) {
                     mysqli_stmt_bind_param($stmt, 's', $username);
@@ -52,10 +61,8 @@ if (!empty($_SESSION['username'])) {
                         $stored = $user['password'];
                         $info = password_get_info($stored);
                         if (!empty($info['algo'])) {
-                            // hashed
                             $ok = password_verify($password, $stored);
                         } else {
-                            // plaintext fallback
                             $ok = hash_equals($stored, $password);
                         }
                     }
@@ -63,8 +70,7 @@ if (!empty($_SESSION['username'])) {
                     if ($ok) {
                         session_regenerate_id(true);
                         $_SESSION['username'] = $username;
-                        // Redirect to clean POST -> GET
-                        header('Location: ' . $_SERVER['REQUEST_URI']);
+                        header('Location: ' . $_SERVER['REQUEST_URI']); // PRG pattern
                         exit;
                     } else {
                         $login_error = 'Invalid username or password.';
@@ -119,17 +125,13 @@ if (!empty($_SESSION['username'])) {
         </form>
 
         <p class="hint">
-            Tip for testing: Ensure your <code>users</code> table has either a plaintext password or a hash.
-            For plaintext:<br>
-            <code>INSERT INTO users (username, password) VALUES ('admin', 'admin');</code><br>
-            For hashed (recommended), generate with <code>password_hash()</code>.
+            To test quickly, ensure your <code>users</code> table includes admin/admin (plaintext) or a hashed password.
         </p>
     </main>
     <?php if (file_exists(__DIR__ . '/footer.inc')) include __DIR__ . '/footer.inc'; ?>
     </body>
     </html>
     <?php
-    // stop the rest of the page from rendering
     exit;
 }
 // === End Auth guard ===
@@ -180,7 +182,7 @@ if (!empty($_SESSION['username'])) {
     </head>
     <body>
         <!-- php Header with navigation menu-->
-        <?php include 'header.inc'; ?>
+        <?php include_once 'header.inc'; ?>
 
         <main>
             <?php
@@ -264,7 +266,7 @@ if (!empty($_SESSION['username'])) {
             }
 
             // Include header
-            include 'header.inc';
+            include_once 'header.inc';
             ?>
 
             <main>
