@@ -91,8 +91,15 @@ if (!empty($_SESSION['username'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login</title>
         <style>
-            body { font-family: Arial, sans-serif; margin: 0; background: #0a0a0a; color: #eee; }
-            main { max-width: 480px; margin: 64px auto; padding: 24px; background: #151515; border-radius: 12px; }
+            body { font-family: "Segoe UI", "Roboto",
+                    "Helvetica Neue", "Arial", "sans-serif",
+                    "Apple Color Emoji", "Segoe UI Emoji",
+                    "Segoe UI Symbol";
+                   margin: 0; 
+                   background: white; 
+                   color: #333; 
+                }
+            main { max-width: 480px; margin: 64px auto; padding: 24px; background: crimson; border-radius: 12px; }
             h1 { margin-top: 0; }
             form { display: grid; gap: 12px; }
             label { font-size: 14px; color: #bbb; }
@@ -110,7 +117,7 @@ if (!empty($_SESSION['username'])) {
         </style>
     </head>
     <body>
-    <?php if (file_exists(__DIR__ . '/header.inc')) include __DIR__ . '/header.inc'; ?>
+    <?php include_once 'header.inc'; ?>
     <main>
         <h1>Sign in</h1>
         <?php if (!empty($login_error)): ?>
@@ -128,7 +135,7 @@ if (!empty($_SESSION['username'])) {
             To test quickly, ensure your <code>users</code> table includes admin/admin (plaintext) or a hashed password.
         </p>
     </main>
-    <?php if (file_exists(__DIR__ . '/footer.inc')) include __DIR__ . '/footer.inc'; ?>
+    <?php include_once 'footer.inc'; ?>
     </body>
     </html>
     <?php
@@ -196,11 +203,8 @@ if (!empty($_SESSION['username'])) {
                 die("Connection failed: " . mysqli_connect_error());
             }
             
-            // Check if user is logged in
-            if (!isset($_SESSION['username'])) {
-                header('Location: login.php');
-                exit();
-            }
+            
+            
 
             // Handle different actions based on GET/POST parameters
             $action = $_GET['action'] ?? '';
@@ -218,9 +222,9 @@ if (!empty($_SESSION['username'])) {
 
             // Function to list EOIs by job reference
             function listByJobReference($dbconn, $job_reference) {
-                $query = "SELECT * FROM EOIs WHERE job_reference LIKE ?";
+                $query = "SELECT * FROM EOIs WHERE job_reference_number LIKE ?";
                 $stmt = mysqli_prepare($dbconn, $query);
-                mysqli_stmt_bind_param($stmt, 's', $job_reference);
+                mysqli_stmt_bind_param($stmt, 's', $job_reference_number);
                 mysqli_stmt_execute($stmt);
                 return mysqli_stmt_get_result($stmt);
             }
@@ -308,7 +312,7 @@ if (!empty($_SESSION['username'])) {
                 <form method="POST" action="?action=list_all">
                     <label for="sort_by">Sort by:</label>
                     <select name="sort_by">
-                        <option value="job_reference">Job Reference</option>
+                        <option value="job_reference_number">Job Reference</option>
                         <option value="applicant_first_name">First Name</option>
                         <option value="applicant_last_name">Last Name</option>
                     </select>
@@ -326,11 +330,31 @@ if (!empty($_SESSION['username'])) {
                         <th>Actions</th>
                     </tr>
                     <?php
-                    if (isset($result)) {
+                    $sql = "
+                    SELECT
+                        eoi_id AS id,
+                        job_reference_number AS job_reference,
+                        first_name AS applicant_first_name,
+                        last_name AS applicant_last_name,
+                        status AS eoi_status
+                    FROM eoi
+                    WHERE job_reference_number = ?
+                    ORDER BY eoi_id
+                    ";
+                    $stmt = mysqli_prepare($dbconn, $sql);
+                    mysqli_stmt_bind_param($stmt, 's', $jobRef);
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt); // requires mysqlnd
+
+                    if ($result === false) {
+                        echo "<p style='color:#a00'>Query failed: "
+                        . htmlspecialchars(mysqli_error($dbconn))
+                        . "</p>";
+                    } else {
                         while ($row = mysqli_fetch_assoc($result)) {
                             echo "<tr>";
                             echo "<td>" . $row['id'] . "</td>";
-                            echo "<td>" . $row['job_reference'] . "</td>";
+                            echo "<td>" . $row['job_reference_number'] . "</td>";
                             echo "<td>" . $row['applicant_first_name'] . "</td>";
                             echo "<td>" . $row['applicant_last_name'] . "</td>";
                             echo "<td>" . $row['eoi_status'] . "</td>";
