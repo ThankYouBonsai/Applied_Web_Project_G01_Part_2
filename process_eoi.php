@@ -26,56 +26,54 @@
                     $length = strlen($value);
 
                     if ($length > $arg) { 
-                        echo $value . "Is larger than needed";
-                        return -1; 
-                        //leaveprocess(); 
+                        //echo $value . "Is larger than needed";
+                        //return -1; 
+                        leaveprocess(); 
                     }
                 } else if ($type == "PHONENUM") {
                     $length = strlen($value);
                     if ($length > 12 && $length < 8) { 
-                        echo $value . "Is too long";
-                        return -1; 
-                        //leaveprocess(); 
+                        //echo $value . "Is too long";
+                        //return -1; 
+                        leaveprocess(); 
                     }
                 } // else { $correctValues = true; } // TEXT
 
                 // REGEX
                 if (preg_match($regex, $value) == false && $regex != "") { 
-                    echo "<p>" . $value . "does not have regex for" . $regex . "</p>";
-                    return -1; 
-                    //leaveprocess(); 
+                    //echo "<p>" . $value . "does not have regex for" . $regex . "</p>";
+                    //return -1; 
+                    leaveprocess(); 
                 }
 
                 // NULL CHECK
                 if ($value == "" && $type != "TEXT") { 
-                    echo "Null Value";
-                    return -1; 
-                    //leaveprocess();
+                    //echo "Null Value";
+                    //return -1; 
+                    leaveprocess();
                 }
                 
                 return $value;
             }
 
-            function sqlquery($host, $user, $pwd, $sql_db, $query) {
+            function sqlquery($host, $user, $pwd, $sql_db, $query, $return) {
 
                 $conn = mysqli_connect($host, $user, $pwd, $sql_db);
 
                 if (!$conn){
-                    echo "<p> Could not connect to the database</p>";
+                    echo "<p> Could not connect to the database. Please try again</p>";
                 }
                 $result = mysqli_query($conn, $query);
 
-                if ($result) {
-                    echo "<p>Something went right</p>";
-                } else {
-                    echo "<p>Something went wrong</p>";
-                }
-
                 mysqli_close($conn);
+                if ($return){
+                    return $result;
+                }
+                
             }
 
             $query = "CREATE TABLE IF NOT EXISTS `eoi` (`eoi_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, `job_reference_number` varchar(5) NOT NULL, `first_name` varchar(20) NOT NULL, `last_name` varchar(20) NOT NULL, `dob` date NOT NULL, `gender` varchar(6) NOT NULL COMMENT 'MALE / FEMALE', `address` varchar(40) NOT NULL, `suburb` varchar(40) NOT NULL, `state` varchar(3) NOT NULL, `postcode` int(4) NOT NULL, `email` text NOT NULL, `phone_number` varchar(12) NOT NULL COMMENT 'Min 8, Max 12', `skill_list` text NOT NULL COMMENT 'checkbox inputs', `other_skills` text NOT NULL, `status` varchar(7) NOT NULL COMMENT 'new / current / final') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
-            sqlquery($host, $user, $pwd, $sql_db, $query);
+            sqlquery($host, $user, $pwd, $sql_db, $query, false);
 
             $job_ref_num = $_POST['referenceNumber'];
             $first_name = $_POST['firstName'];
@@ -104,7 +102,23 @@
             $other_skill = validate($other_skill, "TEXT", -1, "");
 
             $query = "INSERT INTO eoi (job_reference_number, first_name, last_name, dob, gender, address, suburb, state, postcode, email, phone_number, skill_list, other_skills, status) VALUES ('" . $job_ref_num . "', '". $first_name . "', '". $last_name . "', '1970-1-1', '". $gender . "', '". $address . "', '". $suburb . "', '". $state . "', '". $postcode . "', '". $email . "', '". $phone_num . "', '". $jsonData . "', '". $other_skill . "', 'New');";
-            sqlquery($host, $user, $pwd, $sql_db, $query);
+            sqlquery($host, $user, $pwd, $sql_db, $query, false);
+
+
+            // Find ID number
+            $query = "SELECT eoi_id FROM `eoi` WHERE first_name = '" . $first_name . "' AND last_name = '" . $last_name . "' ORDER BY eoi_id DESC LIMIT 1;"; // Order created by ChatGPT
+            $conn = mysqli_connect($host, $user, $pwd, $sql_db);
+            $result = mysqli_query($conn, $query);
+            mysqli_close($conn);
+
+            // Following is created by chatgpt, to get the latest eoi_id in the table
+            if ($result && mysqli_num_rows($result) > 0){
+                $row = mysqli_fetch_assoc($result);
+                $latest_id = $row['eoi_id'];
+                echo "<p>Your Application Number Is: " . $latest_id . "</p>";
+            } else {
+                //echo "No rows found";
+            }            
         ?>
     </body>
 </html>
