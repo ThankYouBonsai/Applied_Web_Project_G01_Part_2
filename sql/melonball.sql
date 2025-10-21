@@ -32,6 +32,7 @@ CREATE TABLE `about` (
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
   `lang` varchar(100) NOT NULL,
+  `lang_html` varchar(20) NOT NULL,
   `quote_lang` text NOT NULL,
   `quote_eng` text NOT NULL,
   `snack` text NOT NULL,
@@ -45,11 +46,11 @@ CREATE TABLE `about` (
 -- Dumping data for table `about`
 --
 
-INSERT INTO `about` (`id`, `first_name`, `last_name`, `lang`, `quote_lang`, `quote_eng`, `snack`, `part_one_cont`, `part_two_cont`, `dream_job`, `hometown`) VALUES
-(105317705, 'Kiahok', 'Ung', 'Khhmer:', 'ដំរី​ជើង​បួន គង់​មាន​ភ្លាត់ អ្នកប្រាជ្ញ​ចេះ​ស្ទាត់ គង់​មាន​ភ្លេច', 'A four-legged elephant can still fall, a wise man who\'s knowledgeable can still forget.', 'Chips', 'Contributed with the website mock up design, header and footer css, jobs.html and css\r\nportion of it. Code for the website consistency and mobile view.', '', 'UX Designer', 'Perth'),
-(105671294, 'Jonah', 'Clyde', 'Japanese:', '日本語: 猿も木から落ちる', 'Even a monkey falls down from trees', 'Ice-cream', 'Contributed towards making the jira as well as organising the sprints. For the webpage, I went into apply.html and apply_styles.css, which is a form for people applying for a job at MelonBall :)', '', 'Software Engineer', 'Melbourne'),
-(105739480, 'Duc', 'Vo', 'Tiếng Việt:', 'Nhìn người Việt bay mà không cần cánh kìa!', 'Look at the Vietnamese flying without wings!', 'Bubble Tea', 'Contributed on making about.html and about.css', '', 'Data Scientist', 'Brisbane'),
-(105874572, 'James', 'Ralph', 'Italian:', '\"Finché c\'è vita c\'è speranza\"', '\"While there\'s life, there\'s hope\"', 'HSP', 'The delegation of duties was also handled by Jonah and me. For our webpage my responsibilities were for the company details(Who is the company, job details etc), the index.html and relevant CSS.', '', 'Audio Director/Programmer', 'Brisbane');
+INSERT INTO `about` (`id`, `first_name`, `last_name`, `lang`, `lang_html`, `quote_lang`, `quote_eng`, `snack`, `part_one_cont`, `part_two_cont`, `dream_job`, `hometown`) VALUES
+(105317705, 'Kiahok', 'Ung', 'Khhmer:', 'km', 'ដំរី​ជើង​បួន គង់​មាន​ភ្លាត់ អ្នកប្រាជ្ញ​ចេះ​ស្ទាត់ គង់​មាន​ភ្លេច', 'A four-legged elephant can still fall, a wise man who\'s knowledgeable can still forget.', 'Chips', 'Contributed with the website mock up design, header and footer css, jobs.html and css\r\nportion of it. Code for the website consistency and mobile view.', 'I contributed with making the database in mySQL for jobs listing making it modular as well as convert the old html format into a while loop PHP format for scalability.', 'UX Designer', 'Perth'),
+(105671294, 'Jonah', 'Clyde', 'Japanese:', 'ja', '日本語: 猿も木から落ちる', 'Even a monkey falls down from trees', 'Ice-cream', 'Contributed towards making the jira as well as organising the sprints. For the webpage, I went into apply.html and apply_styles.css, which is a form for people applying for a job at MelonBall :)', 'Setting up the expression of interest (eoi) table, changing apply.php form validation to be on serverside, with further validation for regex and possible sql injections, with query\'s to add the eoi table to the database if it doesn\'t exist, as well as adding a new row to the table when the form is submitted', 'Software Engineer', 'Melbourne'),
+(105739480, 'Duc', 'Vo', 'Tiếng Việt:', 'vi', 'Nhìn người Việt bay mà không cần cánh kìa!', 'Look at the Vietnamese flying without wings!', 'Bubble Tea', 'Contributed on making about.html and about.css', 'Creating the manage.php with the login page to manage the data from the eoi sections. Also, I apply hash to make the page more secure.', 'Data Scientist', 'Brisbane'),
+(105874572, 'James', 'Ralph', 'Italian:', 'it', '\"Finché c\'è vita c\'è speranza\"', '\"While there\'s life, there\'s hope\"', 'HSP', 'The delegation of duties was also handled by Jonah and me. For our webpage my responsibilities were for the company details(Who is the company, job details etc), the index.html and relevant CSS.', 'Handled the setting up of the repo, header and footer.incs, and was responsible for setting up the about.php in a way that was modular and loaded from mySQL.', 'Audio Director/Programmer', 'Brisbane');
 
 
 -- --------------------------------------------------------

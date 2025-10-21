@@ -79,8 +79,6 @@
           if ($result && mysqli_num_rows($result) > 0) 
           {
 
-            $lang_html = array("km", "ja", "vi", "it");
-            $index = 0;
 
             while ($row = mysqli_fetch_assoc($result)) {
               $first_name = htmlspecialchars($row['first_name']);
@@ -88,6 +86,7 @@
               $lang = htmlspecialchars($row['lang']);
               $quote_lang = htmlspecialchars($row['quote_lang']);
               $quote_eng = htmlspecialchars($row['quote_eng']);
+              $lang_html = htmlspecialchars($row['lang_html']);
               $member_cont_one = htmlspecialchars($row['part_one_cont']);
               $member_cont_two = htmlspecialchars($row['part_two_cont']);
 
@@ -98,10 +97,9 @@
                       <dt>Member Contributions 2:</dt>
                       <dd>$member_cont_two</dd>
                       <dt> Quote </dt>
-                      <dd>$lang <span lang='{$lang_html[$index]}'>$quote_lang</span></dd>
+                      <dd>$lang <span lang='{$lang_html}'>$quote_lang</span></dd>
                       <dd>English: $quote_eng</dd>
                     </dl>";
-              $index += 1;
             }
 
             echo "<section class = 'about-section'>
@@ -115,8 +113,8 @@
                      <th> Hometown </th>
                    </tr>
                  <tbody>";
-            // Used ChatGPT to help me reset the row array
-            mysqli_data_seek($result, 0); // Reset result pointer to the beginning
+            // resets result pointer to beginning
+            $result = mysqli_query($conn, $sql);
 
             while ($row = mysqli_fetch_assoc($result)) {
               $id = htmlspecialchars($row['id']);
