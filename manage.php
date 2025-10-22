@@ -1,10 +1,12 @@
 <?php
+// manage.php — cleaned syntax & stable session handling
 
-
-if (session_status() === PHP_SESSION_NONE) { if (session_status() === PHP_SESSION_NONE) { session_start(); } }
+// --- Session & Output Buffer ---
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 ob_start();
 
-// Optional logout via query: manage.php?action=logout
+// --- Logout ---
+// Use manage.php?action=logout to log out.
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     $_SESSION = [];
     if (ini_get('session.use_cookies')) {
@@ -16,25 +18,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     exit;
 }
 
-// If already logged in, continue; else show login form.
-if (!empty($_SESSION['username'])) {
-    // --- One-request login: force re-login on refresh ---
-    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-    header('Pragma: no-cache');
-    header('Expires: 0');
-    register_shutdown_function(function () {
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            $_SESSION = [];
-            if (ini_get('session.use_cookies')) {
-                $p = session_get_cookie_params();
-                setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
-            }
-            session_destroy();
-        }
-    });
-} else {
-    // Handle login POST
+// --- Auth Guard (show login if not authenticated) ---
+if (empty($_SESSION['username'])) {
     $login_error = '';
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -43,6 +30,7 @@ if (!empty($_SESSION['username'])) {
             $login_error = 'Please enter both username and password.';
         } else {
             require_once __DIR__ . '/settings.php'; // expects $host, $user, $pwd, $sql_db
+
             $dbconn = @mysqli_connect($host ?? null, $user ?? null, $pwd ?? null, $sql_db ?? null);
             if (!$dbconn) {
                 $login_error = 'Database connection failed: ' . htmlspecialchars(mysqli_connect_error());
@@ -51,38 +39,35 @@ if (!empty($_SESSION['username'])) {
                 if ($stmt = mysqli_prepare($dbconn, $sql)) {
                     mysqli_stmt_bind_param($stmt, 's', $username);
                     mysqli_stmt_execute($stmt);
-                    $result = mysqli_stmt_get_result($stmt);
-                    $user = mysqli_fetch_assoc($result);
-                    mysqli_free_result($result);
-                    mysqli_stmt_close($stmt);
-
-                    $ok = false;
-                    if ($user) {
-                        $stored = $user['password'];
-                        $info = password_get_info($stored);
-                        if (!empty($info['algo'])) {
+                    $res = mysqli_stmt_get_result($stmt);
+                    if ($res && ($row = mysqli_fetch_assoc($res))) {
+                        $stored = $row['password'];
+                        // Allow either plain text (teaching/demo) or hashed
+                        $ok = false;
+                        if (password_get_info($stored)['algo']) {
                             $ok = password_verify($password, $stored);
                         } else {
                             $ok = hash_equals($stored, $password);
                         }
-                    }
-
-                    if ($ok) {
-                        session_regenerate_id(true);
-                        $_SESSION['username'] = $username;
-                        header('Location: ' . $_SERVER['REQUEST_URI']); // PRG pattern
-                        exit;
+                        if ($ok) {
+                            session_regenerate_id(true);
+                            $_SESSION['username'] = $username;
+                            header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+                            exit;
+                        } else {
+                            $login_error = 'Invalid username or password.';
+                        }
                     } else {
                         $login_error = 'Invalid username or password.';
                     }
+                    mysqli_stmt_close($stmt);
                 } else {
-                    $login_error = 'Query error: could not prepare statement.';
+                    $login_error = 'Could not prepare login statement.';
                 }
+                mysqli_close($dbconn);
             }
         }
     }
-
-    // Render login page and exit
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -91,286 +76,236 @@ if (!empty($_SESSION['username'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login</title>
         <style>
-            body { font-family: "Segoe UI", "Roboto",
-                    "Helvetica Neue", "Arial", "sans-serif",
-                    "Apple Color Emoji", "Segoe UI Emoji",
-                    "Segoe UI Symbol";
-                   margin: 0; 
-                   background: white; 
-                   color: #333; 
-                }
-            main { max-width: 480px; margin: 64px auto; padding: 24px; background: crimson; border-radius: 12px; }
-            h1 { margin-top: 0; }
-            form { display: grid; gap: 12px; }
-            label { font-size: 14px; color: #bbb; }
-            input[type="text"], input[type="password"] {
-                width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #333; background: #111; color: #eee;
-            }
-            input[type="submit"] {
-                padding: 10px 14px; border: 0; border-radius: 8px; cursor: pointer;
-            }
-            .btn { background: #2e7d32; color: white; }
-            .error { background: #4a1c1c; color: #ffb3b3; padding: 10px; border-radius: 8px; margin-bottom: 12px; }
-            .hint { font-size: 12px; color: #999; }
-            a { color: #9ad; text-decoration: none; }
-            a:hover { text-decoration: underline; }
+            body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; background: #f6f7fb; }
+            main { max-width: 460px; margin: 72px auto; padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+            h1 { margin: 0 0 16px; font-size: 22px; }
+            label { display:block; margin:12px 0 6px; font-weight:600; }
+            input[type="text"], input[type="password"] { width:100%; padding:10px 12px; border:1px solid #d9dee8; border-radius:8px; box-sizing:border-box; }
+            .btn { margin-top:16px; width:100%; padding:10px 12px; border:0; border-radius:8px; background:#0b5fff; color:white; font-weight:600; cursor:pointer; }
+            .btn:hover { background:#0a52da; }
+            .error { background:#ffe8e8; color:#8a1f1f; padding:10px 12px; border:1px solid #ffc7c7; border-radius:8px; margin-bottom:12px; }
+            .hint { margin-top:16px; color:#667085; font-size:13px; }
+            code { background:#f0f3fa; padding:2px 6px; border-radius:6px; }
         </style>
     </head>
     <body>
-    <?php include_once 'header.inc'; ?>
-    <main>
-        <h1>Sign in</h1>
-        <?php if (!empty($login_error)): ?>
-            <div class="error"><?php echo htmlspecialchars($login_error); ?></div>
-        <?php endif; ?>
-        <form method="POST" action="">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" required value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>" autofocus>
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
-            <input type="submit" class="btn" value="Login">
-        </form>
-
-        <p class="hint">
-            To test quickly, ensure your <code>users</code> table includes admin/admin (plaintext) or a hashed password.
-        </p>
-    </main>
-    <?php include 'footer.inc'; ?>
+        <main>
+            <h1>Sign in</h1>
+            <?php if (!empty($login_error)): ?>
+                <div class="error"><?php echo htmlspecialchars($login_error); ?></div>
+            <?php endif; ?>
+            <form method="POST" action="">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>" autofocus required>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <input type="submit" class="btn" value="Login">
+            </form>
+            <p class="hint">
+                Tip: Ensure your <code>users</code> table has a test account (e.g. admin/admin) or a hashed password created via <code>password_hash()</code>.
+            </p>
+        </main>
     </body>
     </html>
     <?php
     exit;
 }
-// === End Auth guard ===
+
+// --- Authenticated area below ---
+
+// Include header / nav
+include_once __DIR__ . '/header.inc';
+
+// Database connection for management actions
+require_once __DIR__ . '/settings.php';
+$dbconn = @mysqli_connect($host, $user, $pwd, $sql_db);
+if (!$dbconn) {
+    // Render a simple error and stop (still valid HTML because header.inc likely opened the HTML doc already)
+    echo '<main><h2>Database Error</h2><p>' . htmlspecialchars(mysqli_connect_error()) . '</p></main>';
+    include __DIR__ . '/footer.inc';
+    exit;
+}
+
+// Handle actions
+$action        = $_GET['action'] ?? '';
+$job_reference = trim($_POST['job_reference'] ?? '');
+$first_name    = trim($_POST['first_name'] ?? '');
+$last_name     = trim($_POST['last_name'] ?? '');
+$id            = isset($_POST['id']) ? (int)$_POST['id'] : null;
+$new_status    = trim($_POST['status'] ?? '');
+$sort_by       = $_POST['sort_by'] ?? 'job_reference_number';
+$flash         = '';
+
+// Sort whitelist
+$sortable = [
+    'job_reference_number' => 'job_reference_number',
+    'first_name'           => 'first_name',
+    'last_name'            => 'last_name',
+    'status'               => 'status',
+    'eoi_id'               => 'eoi_id',
+];
+$sort_col = $sortable[$sort_by] ?? 'job_reference_number';
+
+// Helper functions (prepared statements)
+function listAllEOIs($dbconn, $sort_col) {
+    $sql = "SELECT eoi_id AS id, job_reference_number, first_name, last_name, status FROM eoi ORDER BY $sort_col";
+    return mysqli_query($dbconn, $sql);
+}
+
+function listByJobReference($dbconn, $job_reference) {
+    $sql = "SELECT eoi_id AS id, job_reference_number, first_name, last_name, status
+            FROM eoi
+            WHERE job_reference_number LIKE ?
+            ORDER BY eoi_id";
+    $stmt = mysqli_prepare($dbconn, $sql);
+    $like = "%" . $job_reference . "%";
+    mysqli_stmt_bind_param($stmt, 's', $like);
+    mysqli_stmt_execute($stmt);
+    return mysqli_stmt_get_result($stmt);
+}
+
+function listByApplicantName($dbconn, $first_name, $last_name) {
+    $clauses = [];
+    $params = [];
+    $types  = '';
+
+    if ($first_name !== '') { $clauses[] = "first_name LIKE ?"; $params[] = "%".$first_name."%"; $types .= 's'; }
+    if ($last_name  !== '') { $clauses[] = "last_name  LIKE ?"; $params[] = "%".$last_name."%";  $types .= 's'; }
+
+    if (!$clauses) { return false; }
+
+    $where = implode(" AND ", $clauses);
+    $sql = "SELECT eoi_id AS id, job_reference_number, first_name, last_name, status
+            FROM eoi
+            WHERE $where
+            ORDER BY eoi_id";
+    $stmt = mysqli_prepare($dbconn, $sql);
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    mysqli_stmt_execute($stmt);
+    return mysqli_stmt_get_result($stmt);
+}
+
+function deleteEOIsByJobReference($dbconn, $job_reference) {
+    $sql = "DELETE FROM eoi WHERE job_reference_number = ?";
+    $stmt = mysqli_prepare($dbconn, $sql);
+    mysqli_stmt_bind_param($stmt, 's', $job_reference);
+    mysqli_stmt_execute($stmt);
+    return mysqli_stmt_affected_rows($stmt);
+}
+
+function changeEOIStatus($dbconn, $id, $new_status) {
+    $sql = "UPDATE eoi SET status = ? WHERE eoi_id = ?";
+    $stmt = mysqli_prepare($dbconn, $sql);
+    mysqli_stmt_bind_param($stmt, 'si', $new_status, $id);
+    mysqli_stmt_execute($stmt);
+    return mysqli_stmt_affected_rows($stmt);
+}
+
+// Decide what to run
+$result = null;
+if ($action === 'list_all') {
+    $result = listAllEOIs($dbconn, $sort_col);
+} elseif ($action === 'list_by_job_reference') {
+    $result = listByJobReference($dbconn, $job_reference);
+} elseif ($action === 'list_by_name') {
+    $result = listByApplicantName($dbconn, $first_name, $last_name);
+} elseif ($action === 'delete_by_job_reference') {
+    if ($job_reference === '') {
+        $flash = 'Please enter a Job Reference to delete.';
+    } else {
+        $deleted = deleteEOIsByJobReference($dbconn, $job_reference);
+        $flash = $deleted . " record(s) deleted for job reference " . htmlspecialchars($job_reference) . ".";
+        $result = listAllEOIs($dbconn, $sort_col);
+    }
+} elseif ($action === 'change_status' && $id && $new_status !== '') {
+    $changed = changeEOIStatus($dbconn, $id, $new_status);
+    $flash = $changed ? "EOI #$id status updated to " . htmlspecialchars($new_status) . "."
+                      : "No changes made for EOI #$id.";
+    $result = listAllEOIs($dbconn, $sort_col);
+}
+
+// --- Render management UI ---
 ?>
-<html lang="en">
-    <head>
+<main>
+    <h2>Manage EOIs</h2>
 
-        <meta charset="UTF-8">
+    <!-- List by Job Reference -->
+    <form method="POST" action="?action=list_by_job_reference" style="margin-bottom:12px;">
+        <label for="job_reference">Job Reference:</label>
+        <input type="text" name="job_reference" id="job_reference" required>
+        <input type="submit" value="List EOIs by Job Reference">
+    </form>
 
-        <!-- Responsive Web Design -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- List by Applicant Name -->
+    <form method="POST" action="?action=list_by_name" style="margin-bottom:12px;">
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" id="first_name">
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" id="last_name">
+        <input type="submit" value="List EOIs by Applicant Name">
+    </form>
 
-        <!-- HTML Page Description for SEO -->
-        <meta name="description" content="Main landing page for MelonBall, a game development company specializing in tropical, relaxing, immersive games.">
+    <!-- Delete by Job Reference -->
+    <form method="POST" action="?action=delete_by_job_reference" style="margin-bottom:12px;">
+        <label for="job_reference_del">Job Reference:</label>
+        <input type="text" name="job_reference" id="job_reference_del" required>
+        <input type="submit" value="Delete EOIs by Job Reference">
+    </form>
 
-        <!-- Keywords for SEO -->
-        <meta name="keywords" content="Melonball, tropical, relaxing, immersive, games">
+    <!-- Change EOI Status -->
+    <form method="POST" action="?action=change_status" style="margin-bottom:12px;">
+        <label for="id">EOI ID:</label>
+        <input type="number" name="id" id="id" required>
+        <label for="status">Status:</label>
+        <input type="text" name="status" id="status" required>
+        <input type="submit" value="Change EOI Status">
+    </form>
 
-        <!-- Author Information -->
-        <meta name="author" content="Jonah, James, Kia and Duc">
+    <!-- Sort EOIs (Display All) -->
+    <form method="POST" action="?action=list_all" style="margin-bottom:12px;">
+        <label for="sort_by">Sort by:</label>
+        <select name="sort_by" id="sort_by">
+            <option value="job_reference_number">Job Reference</option>
+            <option value="first_name">First Name</option>
+            <option value="last_name">Last Name</option>
+            <option value="status">Status</option>
+            <option value="eoi_id">EOI ID</option>
+        </select>
+        <input type="submit" value="Display All (Sorted)">
+    </form>
 
-        <!-- Link to external CSS File -->
-        <link rel="stylesheet" href="styles/stylessheet.css">
+    <?php if (!empty($flash)): ?>
+        <p style="padding:8px; background:#fff8c4; border:1px solid #f0e68c; border-radius:6px;">
+            <?php echo $flash; ?>
+        </p>
+    <?php endif; ?>
 
-        <!-- Title of Web Page-->
-        <title>MelonBall - Play Easy. Drift Far.</title>
-        <!-- Embedded CSS for right panel text styling -->
-        <style>
-          .index_rightpanel h2 {
-            color: #ffffff;
-          }
+    <?php if ($result): ?>
+        <table border="1" cellpadding="6" cellspacing="0">
+            <tr>
+                <th>ID</th>
+                <th>Job Reference</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Status</th>
+            </tr>
+            <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($row['id']); ?></td>
+                    <td><?php echo htmlspecialchars($row['job_reference_number']); ?></td>
+                    <td><?php echo htmlspecialchars($row['first_name']); ?></td>
+                    <td><?php echo htmlspecialchars($row['last_name']); ?></td>
+                    <td><?php echo htmlspecialchars($row['status']); ?></td>
+                </tr>
+            <?php endwhile; ?>
+        </table>
+    <?php elseif ($action): ?>
+        <p>No results found.</p>
+    <?php endif; ?>
 
-          .index_rightpanel p {
-            color: #ffffff;
-            font-weight: lighter;
-          }
-
-          .index_rightpanel a {
-            color: #ffffff;
-            text-decoration: none;
-          }
-
-          .index_rightpanel a:hover {
-            text-decoration: underline;
-            text-decoration-color: rgb(103, 147, 161);
-          }
-        </style>
-    </head>
-    <body>
-        <!-- php Header with navigation menu-->
-        <?php include_once 'header.inc'; ?>
-
-        <main>
-            <?php
-            if (session_status() === PHP_SESSION_NONE) { session_start(); }
-            require_once 'settings.php';
-
-            $dbconn = @mysqli_connect($host, $user, $pwd, $sql_db);
-
-            // Check for connection failure
-            if (!$dbconn) {
-                die("Connection failed: " . mysqli_connect_error());
-            }
-            
-            
-            
-
-            // Handle different actions based on GET/POST parameters
-            $action = $_GET['action'] ?? '';
-            $job_reference = $_POST['job_reference'] ?? '';
-            $first_name = $_POST['first_name'] ?? '';
-            $last_name = $_POST['last_name'] ?? '';
-            $eoi_status = $_POST['eoi_status'] ?? '';
-            $sort_by = $_POST['sort_by'] ?? 'job_reference'; // Default sorting field
-
-            // Function to list all EOIs
-            function listAllEOIs($dbconn, $sort_by) {
-                $query = "SELECT * FROM EOIs ORDER BY $sort_by";
-                return mysqli_query($dbconn, $query);
-            }
-
-            // Function to list EOIs by job reference
-            function listByJobReference($dbconn, $job_reference) {
-                $query = "SELECT * FROM EOIs WHERE job_reference_number LIKE ?";
-                $stmt = mysqli_prepare($dbconn, $query);
-                mysqli_stmt_bind_param($stmt, 's', $job_reference_number);
-                mysqli_stmt_execute($stmt);
-                return mysqli_stmt_get_result($stmt);
-            }
-
-            // Function to list EOIs by applicant name
-            function listByApplicantName($dbconn, $first_name, $last_name) {
-                $query = "SELECT * FROM EOIs WHERE applicant_first_name LIKE ? AND applicant_last_name LIKE ?";
-                $stmt = mysqli_prepare($dbconn, $query);
-                mysqli_stmt_bind_param($stmt, 'ss', $first_name, $last_name);
-                mysqli_stmt_execute($stmt);
-                return mysqli_stmt_get_result($stmt);
-            }
-
-            // Function to delete all EOIs by job reference
-            function deleteEOIsByJobReference($dbconn, $job_reference) {
-                $query = "DELETE FROM EOIs WHERE job_reference = ?";
-                $stmt = mysqli_prepare($dbconn, $query);
-                mysqli_stmt_bind_param($stmt, 's', $job_reference);
-                return mysqli_stmt_execute($stmt);
-            }
-
-            // Function to change EOI status
-            function changeEOIStatus($dbconn, $id, $eoi_status) {
-                $query = "UPDATE EOIs SET eoi_status = ? WHERE id = ?";
-                $stmt = mysqli_prepare($dbconn, $query);
-                mysqli_stmt_bind_param($stmt, 'si', $eoi_status, $id);
-                return mysqli_stmt_execute($stmt);
-            }
-
-            // Handle specific actions
-            if ($action == 'list_all') {
-                $result = listAllEOIs($dbconn, $sort_by);
-            } elseif ($action == 'list_by_job_reference') {
-                $result = listByJobReference($dbconn, $job_reference);
-            } elseif ($action == 'list_by_name') {
-                $result = listByApplicantName($dbconn, $first_name, $last_name);
-            } elseif ($action == 'delete_by_job_reference') {
-                $delete_success = deleteEOIsByJobReference($dbconn, $job_reference);
-            } elseif ($action == 'change_status') {
-                $id = $_POST['id'];
-                $status = $_POST['status'];
-                $status_changed = changeEOIStatus($dbconn, $id, $status);
-            }
-
-            // Include header
-            include_once 'header.inc';
-            ?>
-
-            <main>
-                <h2>Manage EOIs</h2>
-
-                <!-- Form to list EOIs by job reference -->
-                <form method="POST" action="?action=list_by_job_reference">
-                    <label for="job_reference">Job Reference:</label>
-                    <input type="text" name="job_reference" required>
-                    <input type="submit" value="List EOIs by Job Reference">
-                </form>
-
-                <!-- Form to list EOIs by applicant name -->
-                <form method="POST" action="?action=list_by_name">
-                    <label for="first_name">First Name:</label>
-                    <input type="text" name="first_name">
-                    <label for="last_name">Last Name:</label>
-                    <input type="text" name="last_name">
-                    <input type="submit" value="List EOIs by Applicant Name">
-                </form>
-
-                <!-- Form to delete all EOIs by job reference -->
-                <form method="POST" action="?action=delete_by_job_reference">
-                    <label for="job_reference">Job Reference:</label>
-                    <input type="text" name="job_reference" required>
-                    <input type="submit" value="Delete EOIs by Job Reference">
-                </form>
-
-                <!-- Form to change the status of an EOI -->
-                <form method="POST" action="?action=change_status">
-                    <label for="id">EOI ID:</label>
-                    <input type="text" name="id" required>
-                    <label for="status">Status:</label>
-                    <input type="text" name="status" required>
-                    <input type="submit" value="Change EOI Status">
-                </form>
-
-                <!-- Sort EOIs -->
-                <form method="POST" action="?action=list_all">
-                    <label for="sort_by">Sort by:</label>
-                    <select name="sort_by">
-                        <option value="job_reference_number">Job Reference</option>
-                        <option value="applicant_first_name">First Name</option>
-                        <option value="applicant_last_name">Last Name</option>
-                    </select>
-                    <input type="submit" value="Sort Results">
-                </form>
-
-                <!-- Display EOIs -->
-                <table border="1">
-                    <tr>
-                        <th>ID</th>
-                        <th>Job Reference</th>
-                        <th>Applicant First Name</th>
-                        <th>Applicant Last Name</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                    <?php
-                    $sql = "
-                    SELECT
-                        eoi_id AS id,
-                        job_reference_number AS job_reference,
-                        first_name AS applicant_first_name,
-                        last_name AS applicant_last_name,
-                        status AS eoi_status
-                    FROM eoi
-                    WHERE job_reference_number = ?
-                    ORDER BY eoi_id
-                    ";
-                    $stmt = mysqli_prepare($dbconn, $sql);
-                    mysqli_stmt_bind_param($stmt, 's', $jobRef);
-                    mysqli_stmt_execute($stmt);
-                    $result = mysqli_stmt_get_result($stmt); // requires mysqlnd
-
-                    if ($result === false) {
-                        echo "<p style='color:#a00'>Query failed: "
-                        . htmlspecialchars(mysqli_error($dbconn))
-                        . "</p>";
-                    } else {
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            echo "<tr>";
-                            echo "<td>" . $row['id'] . "</td>";
-                            echo "<td>" . $row['job_reference_number'] . "</td>";
-                            echo "<td>" . $row['applicant_first_name'] . "</td>";
-                            echo "<td>" . $row['applicant_last_name'] . "</td>";
-                            echo "<td>" . $row['eoi_status'] . "</td>";
-                            echo "<td><a href='?action=change_status&id=" . $row['id'] . "'>Change Status</a></td>";
-                            echo "</tr>";
-                        }
-                    }
-                    ?>
-                </table>
-            </main>
-
-            <?php
-            // Include footer
-            include 'footer.inc';
-            ?>
-
-        </main>
-    </body>
-</html>
+</main>
+<?php
+// Footer & close
+include __DIR__ . '/footer.inc';
+mysqli_close($dbconn);
+?>
