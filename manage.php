@@ -99,9 +99,7 @@ if (empty($_SESSION['username'])) {
                 <input type="password" id="password" name="password" required>
                 <input type="submit" class="btn" value="Login">
             </form>
-            <p class="hint">
-                Tip: Ensure your <code>users</code> table has a test account (e.g. admin/admin) or a hashed password created via <code>password_hash()</code>.
-            </p>
+            
         </main>
     </body>
     </html>
