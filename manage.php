@@ -77,7 +77,9 @@ if (empty($_SESSION['username'])) {
         <link rel="stylesheet" href="styles/stylessheet.css">
     </head>
     <body>
+        <?php include 'header.inc'; ?>
         <main>
+
             <h1>Sign in</h1>
             <?php if (!empty($login_error)): ?>
                 <div class="error"><?php echo htmlspecialchars($login_error); ?></div>
@@ -89,7 +91,7 @@ if (empty($_SESSION['username'])) {
                 <input type="password" id="password" name="password" required>
                 <input type="submit" class="btn" value="Login">
             </form>
-            
+        <?php include 'footer.inc'; ?>    
         </main>
     </body>
     </html>
@@ -212,7 +214,53 @@ if ($action === 'list_all') {
 
 // --- Render management UI ---
 ?>
+<html lang = "en">
+    <head>
+                <meta charset="UTF-8">
+
+        <!-- Responsive Web Design -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- HTML Page Description for SEO -->
+        <meta name="description" content="Main landing page for MelonBall, a game development company specializing in tropical, relaxing, immersive games.">
+
+        <!-- Keywords for SEO -->
+        <meta name="keywords" content="Melonball, tropical, relaxing, immersive, games">
+
+        <!-- Author Information -->
+        <meta name="author" content="Jonah, James, Kia and Duc">
+
+        <!-- Link to external CSS File -->
+        <link rel="stylesheet" href="styles/stylessheet.css">
+
+        <!-- Title of Web Page-->
+        <title>MelonBall - Play Easy. Drift Far.</title>
+        <!-- Embedded CSS for right panel text styling -->
+        <style>
+          .index_rightpanel h2 {
+            color: #ffffff;
+          }
+
+          .index_rightpanel p {
+            color: #ffffff;
+            font-weight: lighter;
+          }
+
+          .index_rightpanel a {
+            color: #ffffff;
+            text-decoration: none;
+          }
+
+          .index_rightpanel a:hover {
+            text-decoration: underline;
+            text-decoration-color: rgb(103, 147, 161);
+          }
+        </style>
+        <link rel = "stylesheet" href = "styles/stylessheet.css">
+    </head>
+</html>
 <main>
+    <?php include_once __DIR__ . '/header.inc'; ?>
     <h2>Manage EOIs</h2>
 
     <!-- List by Job Reference -->
@@ -288,11 +336,11 @@ if ($action === 'list_all') {
     <?php elseif ($action): ?>
         <p>No results found.</p>
     <?php endif; ?>
-
+<?php include_once __DIR__ . '/footer.inc'; ?>
 </main>
 <?php
 // Footer & close
-include __DIR__ . '/footer.inc';
+
 mysqli_close($dbconn);
 ?>
 // --- End of manage.php ---
