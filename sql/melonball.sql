@@ -59,7 +59,7 @@ CREATE TABLE `eoi` (
   `first_name` varchar(20) NOT NULL,
   `last_name` varchar(20) NOT NULL,
   `dob` date NOT NULL,
-  `gender` varchar(6) NOT NULL COMMENT 'MALE / FEMALE',
+  `gender` enum('Male','Female','Other') NOT NULL COMMENT 'MALE / FEMALE / OTHER',
   `address` varchar(40) NOT NULL,
   `suburb` varchar(40) NOT NULL,
   `state` varchar(3) NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE `eoi` (
   `phone_number` int(12) NOT NULL COMMENT 'Min 8, Max 12',
   `skill_list` text NOT NULL COMMENT 'checkbox inputs',
   `other_skills` text NOT NULL,
-  `status` varchar(7) NOT NULL COMMENT 'new / current / final'
+  `status` enum('New','Current','Final') NOT NULL COMMENT 'new / current / final'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
