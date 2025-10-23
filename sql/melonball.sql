@@ -110,8 +110,11 @@ INSERT INTO `job_listings` (`job_id`, `reference_code`, `title`, `location`, `ti
 
 CREATE TABLE users (
   username VARCHAR(50) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL
 )
+
+INSERT INTO `users` (`username`, `password`) VALUES
+('admin', 'admin');
 
 ALTER TABLE users MODIFY password VARCHAR(255) NOT NULL;
 --

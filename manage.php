@@ -72,19 +72,9 @@ if (empty($_SESSION['username'])) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Jonah, James, Kia and Duc">
         <title>Login</title>
-        <style>
-            body { font-family:"Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; margin: 0; background: #f6f7fb; }
-            main { max-width: 460px; margin: 72px auto; padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-            h1 { margin: 0 0 16px; font-size: 22px; }
-            label { display:block; margin:12px 0 6px; font-weight:600; }
-            input[type="text"], input[type="password"] { width:100%; padding:10px 12px; border:1px solid #d9dee8; border-radius:8px; box-sizing:border-box; }
-            .btn { margin-top:16px; width:100%; padding:10px 12px; border:0; border-radius:8px; background:#0b5fff; color:white; font-weight:600; cursor:pointer; }
-            .btn:hover { background:#0a52da; }
-            .error { background:#ffe8e8; color:#8a1f1f; padding:10px 12px; border:1px solid #ffc7c7; border-radius:8px; margin-bottom:12px; }
-            .hint { margin-top:16px; color:#667085; font-size:13px; }
-            code { background:#f0f3fa; padding:2px 6px; border-radius:6px; }
-        </style>
+        <link rel="stylesheet" href="styles/stylessheet.css">
     </head>
     <body>
         <main>
