@@ -21,10 +21,10 @@ if (empty($_SESSION['username'])) {
     $login_error = '';
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $username = trim($_POST['username'] ?? '');
+        $username = trim($_POST['username'] ?? ''); #trim to remove whitespace
         $password = $_POST['password'] ?? '';
 
-        if ($username === '' || $password === '') {
+        if ($username === '' || $password === '') { #strict comparison, which check both the value and data type
             $login_error = 'Please enter both username and password.';
         } else {
             require_once __DIR__ . '/settings.php'; // expects $host, $user, $pwd, $sql_db
@@ -40,7 +40,7 @@ if (empty($_SESSION['username'])) {
                     $res = mysqli_stmt_get_result($stmt);
                     if ($res && ($row = mysqli_fetch_assoc($res))) {
                         $stored = $row['password'];
-                        // Allow either plain text (teaching/demo) or hashed
+                        
                         $ok = false;
                         if (password_get_info($stored)['algo']) {
                             $ok = password_verify($password, $stored);
@@ -50,7 +50,7 @@ if (empty($_SESSION['username'])) {
                         if ($ok) {
                             session_regenerate_id(true);
                             $_SESSION['username'] = $username;
-                            header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+                            header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?')); //strtok to break off query string
                             exit;
                         } else {
                             $login_error = 'Invalid username or password.';
