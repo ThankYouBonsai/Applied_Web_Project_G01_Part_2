@@ -81,18 +81,7 @@
                 
                 // Define the SQL Query
                 $sql_query = 
-                  "SELECT 
-                    title, 
-                    reference_code, 
-                    location,
-                    time_commitment, 
-                    salary_range, 
-                    short_description, 
-                    about_the_role, 
-                    requirements, 
-                    responsibilities,
-                    reporting_line
-                  FROM job_listings";
+                  "SELECT * FROM job_listings";
 
                 // Execute the query
                 $result = mysqli_query($conn, $sql_query);
@@ -101,7 +90,7 @@
                 if ($result && mysqli_num_rows($result) > 0) {
                     // Start the Loop: Iterate over every row returned from the database
                     while ($job = mysqli_fetch_assoc($result)) {
-                        // Decode mySQL TEXT list into PHP arrays <- For this to work the entry field need to be written as ["a","b","c","etc.."]
+                        // Decode mySQL TEXT list into PHP arrays <- For this to work the entry field need to be written as ["a","b","c","etc.."] (I got this part from chatGPT)
                         $requirements = json_decode($job['requirements'], true);
                         $responsibilities = json_decode($job['responsibilities'], true);
                         
@@ -131,7 +120,7 @@
                                     <p><strong>Preferable Requirements:</strong></p>
                                     <ol>
                                       <?php 
-                                      // Loop through all the array within the TEXT type mySQL automagically
+                                      // Loop through all the array within the TEXT type mySQL automagically 
                                       if (is_array($requirements)){ // this part check if the TEXT type of mySQL is an array or not, not needed but good practice to avoid errors
                                           foreach ($requirements as $req){ // this basically reads for each requirment in requirments execute below
                                             ?>
