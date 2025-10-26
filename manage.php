@@ -10,9 +10,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     if (ini_get('session.use_cookies')) {
         $params = session_get_cookie_params();
         setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
-    }
+    } #to logout, clear the session cookie
     session_destroy();
-    header("Location: " . strtok($_SERVER['REQUEST_URI'], '?'));
+    header("Location: " . strtok($_SERVER['REQUEST_URI'], '?')); #splits a string into smaller strings (or tokens)
     exit;
 }
 
@@ -119,7 +119,7 @@ $action        = $_GET['action'] ?? '';
 $job_reference = trim($_POST['job_reference'] ?? '');
 $first_name    = trim($_POST['first_name'] ?? '');
 $last_name     = trim($_POST['last_name'] ?? '');
-$id            = isset($_POST['id']) ? (int)$_POST['id'] : null;
+$id            = isset($_POST['id']) ? (int)$_POST['id'] : null; #check the existence of id
 $new_status    = trim($_POST['status'] ?? '');
 $sort_by       = $_POST['sort_by'] ?? 'job_reference_number';
 $flash         = '';
@@ -178,7 +178,7 @@ function deleteEOIsByJobReference($dbconn, $job_reference) {
     $stmt = mysqli_prepare($dbconn, $sql);
     mysqli_stmt_bind_param($stmt, 's', $job_reference);
     mysqli_stmt_execute($stmt);
-    return mysqli_stmt_affected_rows($stmt);
+    return mysqli_stmt_affected_rows($stmt); #update database after deletion
 }
 
 function changeEOIStatus($dbconn, $id, $new_status) {
@@ -331,7 +331,7 @@ if ($action === 'list_all') {
                     <td><?php echo htmlspecialchars($row['last_name']); ?></td>
                     <td><?php echo htmlspecialchars($row['status']); ?></td>
                 </tr>
-            <?php endwhile; ?>
+            <?php endwhile; //ending while loop?> 
         </table>
     <?php elseif ($action): ?>
         <p>No results found.</p>
