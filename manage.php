@@ -34,7 +34,7 @@ if (empty($_SESSION['username'])) {
                 $login_error = 'Database connection failed: ' . htmlspecialchars(mysqli_connect_error());
             } else {
                 $sql = 'SELECT username, password FROM users WHERE username = ? LIMIT 1';
-                if ($stmt = mysqli_prepare($dbconn, $sql)) {
+                if ($stmt = mysqli_prepare($dbconn, $sql)) { #
                     mysqli_stmt_bind_param($stmt, 's', $username);
                     mysqli_stmt_execute($stmt);
                     $res = mysqli_stmt_get_result($stmt);
