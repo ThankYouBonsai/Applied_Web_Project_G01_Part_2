@@ -92,9 +92,9 @@
 
               echo "<h2> $first_name $last_name </h2>";
               echo "<dl>
-                      <dt>Member Contributions 1:</dt>
+                      <dt>Part One: Member Contributions:</dt>
                       <dd>$member_cont_one</dd>
-                      <dt>Member Contributions 2:</dt>
+                      <dt>Part Two: Member Contributions:</dt>
                       <dd>$member_cont_two</dd>
                       <dt> Quote </dt>
                       <dd>$lang <span lang='{$lang_html}'>$quote_lang</span></dd>
