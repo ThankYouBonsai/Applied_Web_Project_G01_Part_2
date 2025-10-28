@@ -71,6 +71,11 @@ CREATE TABLE `eoi` (
   `status` enum('New','Current','Final') NOT NULL COMMENT 'new / current / final'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
+INSERT INTO `eoi` (`eoi_id`, `job_reference_number`, `first_name`, `last_name`, `dob`, `gender`, `address`, `suburb`, `state`, `postcode`, `email`, `phone_number`, `skill_list`, `other_skills`, `status`) VALUES
+(1, 'M1Z2J', 'John', 'Doe', '1970-01-01', 'Male', '30 Henry St', 'Hawthorn', 'VIC', 3122, 'johndoe@hotmail.com.au', 455557536, '[\"teamwork\"]', '', 'New'),
+(2, 'Z8T5K', 'Ashlee', 'Walker', '1970-01-01', 'Female', '4 Mianga Avenue', 'Engadine', 'NSW', 3122, 'ash.walker@outlook.com', 498712312, '[\"teamwork\"]', '', 'New');
+
 -- --------------------------------------------------------
 
 --
